@@ -12,6 +12,10 @@
   var popup = null;
   var lastBlob = null;
 
+  function htmlEncode(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  }
+
   function openPopup() {
     popup = window.open('', 'hl', 'width=390,height=680,scrollbars=yes');
     if (!popup) { alert('Popup blocked! Allow popup for this site and try again.'); return; }
@@ -91,51 +95,51 @@
       html += '<div class="item">' +
         '<div class="ih">' +
         '<span class="bpv" style="background:' + h.badge.color + '">' + h.badge.number + '</span>' +
-        '<input type="text" value="' + (h.label.text || '').replace(/"/g, '&quot;') + '" placeholder="Label..." onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'text\',this.value)">' +
+        '<input type="text" value="' + htmlEncode(h.label.text || '') + '" placeholder="Label..." onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'text\',this.value)">' +
         '<button class="mv" onclick="opener._HL.moveHL(' + h.id + ',-1)"' + (i === 0 ? ' disabled' : '') + '><i class=\'ph ph-caret-up\'></i></button>' +
         '<button class="mv" onclick="opener._HL.moveHL(' + h.id + ',1)"' + (i === hs.length - 1 ? ' disabled' : '') + '><i class=\'ph ph-caret-down\'></i></button>' +
         '<button class="del" onclick="opener._HL.removeHL(' + h.id + ')"><i class=\'ph ph-trash\'></i></button></div>' +
         '<div class="sh">border</div>' +
         '<div class="rw"><label>Style:</label><input type="color" value="' + h.border.color + '" onchange="opener._HL.updateHL(' + h.id + ',\'border\',\'color\',this.value)">' +
-        '<input type="number" value="' + h.border.width + '" min="0" max="10" onchange="opener._HL.updateHL(' + h.id + ',\'border\',\'width\',parseInt(this.value))">' +
+        '<input type="number" value="' + h.border.width + '" min="0" max="10" onchange="opener._HL.updateHL(' + h.id + ',\'border\',\'width\',parseInt(this.value,10)||0)">' +
         '<select onchange="opener._HL.updateHL(' + h.id + ',\'border\',\'style\',this.value)">' +
         '<option value="solid"' + (h.border.style === 'solid' ? ' selected' : '') + '>Solid</option>' +
         '<option value="dashed"' + (h.border.style === 'dashed' ? ' selected' : '') + '>Dash</option>' +
         '<option value="dotted"' + (h.border.style === 'dotted' ? ' selected' : '') + '>Dot</option></select></div>' +
         '<div class="sh">background</div>' +
         '<div class="rw"><label>Color:</label><input type="color" value="' + h.background.color + '" onchange="opener._HL.updateHL(' + h.id + ',\'background\',\'color\',this.value)">' +
-        '<label>Opacity:</label><input type="number" value="' + h.background.opacity + '" min="0" max="100" onchange="opener._HL.updateHL(' + h.id + ',\'background\',\'opacity\',parseInt(this.value))"></div>' +
+        '<label>Opacity:</label><input type="number" value="' + h.background.opacity + '" min="0" max="100" onchange="opener._HL.updateHL(' + h.id + ',\'background\',\'opacity\',parseInt(this.value,10)||0)"></div>' +
         '<div class="sh">area</div>' +
         '<div class="rw"><label>Padding:</label>' +
-        '<input type="number" value="' + h.padding.top + '" placeholder="T" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'top\',parseInt(this.value))">' +
-        '<input type="number" value="' + h.padding.right + '" placeholder="R" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'right\',parseInt(this.value))">' +
-        '<input type="number" value="' + h.padding.bottom + '" placeholder="B" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'bottom\',parseInt(this.value))">' +
-        '<input type="number" value="' + h.padding.left + '" placeholder="L" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'left\',parseInt(this.value))"></div>' +
+        '<input type="number" value="' + h.padding.top + '" placeholder="T" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'top\',parseInt(this.value,10)||0)">' +
+        '<input type="number" value="' + h.padding.right + '" placeholder="R" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'right\',parseInt(this.value,10)||0)">' +
+        '<input type="number" value="' + h.padding.bottom + '" placeholder="B" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'bottom\',parseInt(this.value,10)||0)">' +
+        '<input type="number" value="' + h.padding.left + '" placeholder="L" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'left\',parseInt(this.value,10)||0)"></div>' +
         '<div class="rw"><span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">X</span>' +
-        '<input type="number" value="' + h.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'margin\',\'x\',parseInt(this.value))">' +
+        '<input type="number" value="' + h.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'margin\',\'x\',parseInt(this.value,10)||0)">' +
         '<span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">Y</span>' +
-        '<input type="number" value="' + h.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'margin\',\'y\',parseInt(this.value))"></div>' +
+        '<input type="number" value="' + h.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'margin\',\'y\',parseInt(this.value,10)||0)"></div>' +
         '<div class="sh">badge</div>' +
         '<div class="rw"><label>Grid Position:</label>' +
         '<select onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'grid\',this.value)">' +
         gridOptions(h.badge.grid) + '</select>' +
-        '<label>Size:</label><input type="number" value="' + h.badge.size + '" min="12" max="80" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'size\',parseInt(this.value))">' +
+        '<label>Size:</label><input type="number" value="' + h.badge.size + '" min="12" max="80" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'size\',parseInt(this.value,10)||0)">' +
         '<input type="color" value="' + h.badge.color + '" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'color\',this.value)"></div>' +
         '<div class="rw"><span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">X</span>' +
-        '<input type="number" value="' + h.badge.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'margin\',\'x\',parseInt(this.value))">' +
+        '<input type="number" value="' + h.badge.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'margin\',\'x\',parseInt(this.value,10)||0)">' +
         '<span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">Y</span>' +
-        '<input type="number" value="' + h.badge.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'margin\',\'y\',parseInt(this.value))">' +
+        '<input type="number" value="' + h.badge.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'margin\',\'y\',parseInt(this.value,10)||0)">' +
         '</div>' +
         '<div class="sh">label</div>' +
         '<div class="rw"><label>Grid Position:</label>' +
         '<select onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'grid\',this.value)">' +
         gridOptions(h.label.grid) + '</select>' +
-        '<label>Size:</label><input type="number" value="' + h.label.fontSize + '" min="8" max="72" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'fontSize\',parseInt(this.value))">' +
+        '<label>Size:</label><input type="number" value="' + h.label.fontSize + '" min="8" max="72" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'fontSize\',parseInt(this.value,10)||0)">' +
         '<input type="color" value="' + h.label.color + '" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'color\',this.value)"></div>' +
         '<div class="rw"><span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">X</span>' +
-        '<input type="number" value="' + h.label.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'margin\',\'x\',parseInt(this.value))">' +
+        '<input type="number" value="' + h.label.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'margin\',\'x\',parseInt(this.value,10)||0)">' +
         '<span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">Y</span>' +
-        '<input type="number" value="' + h.label.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'margin\',\'y\',parseInt(this.value))">' +
+        '<input type="number" value="' + h.label.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'margin\',\'y\',parseInt(this.value,10)||0)">' +
         '</div></div>';
     }
     list.innerHTML = html;
@@ -175,7 +179,6 @@
     for (var j = 0; j < state.highlights.length; j++) {
       state.highlights[j].badge.number = j + 1;
     }
-    state.nextId = state.highlights.length + 1;
     state.captureDirty = true;
     renderHighlights();
     renderPopup();
@@ -228,6 +231,7 @@
     a.href = URL.createObjectURL(lastBlob);
     a.download = 'highlight-' + new Date().toISOString().slice(0, 19).replace(/[:-]/g, '') + '.png';
     a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   var PALETTE = ['#5f7dbf','#5f8a6a','#8a7a55','#b07050','#b0657a','#5f80a0','#5f9080','#8a6a9a','#a0606a','#6a7a8a'];
@@ -340,6 +344,7 @@
     disablePick();
     if (popup && !popup.closed) popup.close();
     popup = null;
+    if (lastBlob) { URL.revokeObjectURL(lastBlob); lastBlob = null; }
     delete window._HL;
   }
 
@@ -349,14 +354,14 @@
     var divs = document.querySelectorAll('.hl-overlay');
     for (var i = 0; i < divs.length; i++) {
       var div = divs[i];
-      var id = parseInt(div.getAttribute('data-hl-id'));
+      var id = parseInt(div.getAttribute('data-hl-id'), 10);
       var hl = null;
       for (var j = 0; j < state.highlights.length; j++) {
         if (state.highlights[j].id === id) { hl = state.highlights[j]; break; }
       }
       if (!hl) continue;
-      var left = parseFloat(div.style.left) + hl.rect.scrollX;
-      var top = parseFloat(div.style.top) + hl.rect.scrollY;
+      var left = parseFloat(div.style.left) + window.scrollX;
+      var top = parseFloat(div.style.top) + window.scrollY;
       div.style.position = 'absolute';
       div.style.left = left + 'px';
       div.style.top = top + 'px';
@@ -367,14 +372,14 @@
     var divs = document.querySelectorAll('.hl-overlay');
     for (var i = 0; i < divs.length; i++) {
       var div = divs[i];
-      var id = parseInt(div.getAttribute('data-hl-id'));
+      var id = parseInt(div.getAttribute('data-hl-id'), 10);
       var hl = null;
       for (var j = 0; j < state.highlights.length; j++) {
         if (state.highlights[j].id === id) { hl = state.highlights[j]; break; }
       }
       if (!hl) continue;
-      var left = parseFloat(div.style.left) - hl.rect.scrollX;
-      var top = parseFloat(div.style.top) - hl.rect.scrollY;
+      var left = parseFloat(div.style.left) - window.scrollX;
+      var top = parseFloat(div.style.top) - window.scrollY;
       div.style.position = 'fixed';
       div.style.left = left + 'px';
       div.style.top = top + 'px';
@@ -465,6 +470,10 @@
     var mode = state.screenshotMode;
     var scale = state.dprScale || 1;
 
+    if (document.querySelector('script[src*="html2canvas"]')) {
+      doCapture(mode, scale);
+      return;
+    }
     var script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
     script.onload = function() { doCapture(mode, scale); };
@@ -490,7 +499,7 @@
           var pv = popup.document.getElementById('pv');
           if (pv) {
             var img = new Image();
-            img.onload = function() { pv.innerHTML = ''; pv.appendChild(img); };
+            img.onload = function() { pv.innerHTML = ''; pv.appendChild(img); URL.revokeObjectURL(img.src); };
             img.src = URL.createObjectURL(blob);
           }
           var dl = popup.document.getElementById('dlbtn');
@@ -533,20 +542,27 @@
       return canvas;
     }
 
+    function captureError(err) {
+      if (popup && !popup.closed) {
+        var pv = popup.document.getElementById('pv');
+        if (pv) pv.innerHTML = '<span style="color:#f38ba8">Capture failed: ' + err.message + '</span>';
+      }
+    }
+
     if (mode === 'viewport') {
-      captureViewport().then(done);
+      captureViewport().then(done, captureError);
     } else if (mode === 'fullpage') {
       convertHighlightsToAbsolute();
       captureFullPage().then(function(canvas) {
         convertHighlightsToFixed();
         done(canvas);
-      });
+      }, captureError);
     } else if (mode === 'highlights') {
       convertHighlightsToAbsolute();
       captureFullPage().then(function(canvas) {
         convertHighlightsToFixed();
         done(cropToHighlights(canvas));
-      });
+      }, captureError);
     }
   }
 
