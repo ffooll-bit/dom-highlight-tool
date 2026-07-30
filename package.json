@@ -2,7 +2,17 @@
   "name": "dom-highlight-tool",
   "version": "1.0.0",
   "private": true,
-  "description": "Bookmarklet for highlighting DOM elements and taking screenshots",
+  "description": "Bookmarklet for highlighting DOM elements and capturing screenshots",
+  "keywords": ["bookmarklet", "screenshot", "dom-highlight", "highlight", "dom"],
+  "license": "MIT",
+  "author": "ffooll-bit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ffooll-bit/dom-highlight-tool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ffooll-bit/dom-highlight-tool/issues"
+  },
   "scripts": {
     "build": "terser highlight-tool.js -o highlight-tool.min.js && node -e \"const fs=require('fs');fs.writeFileSync('bookmarklet.txt','javascript:'+fs.readFileSync('highlight-tool.min.js','utf8'))\""
   },

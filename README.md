@@ -1,6 +1,15 @@
 # DOM Highlight Tool
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A **bookmarklet** to visually highlight DOM elements on any web page and capture screenshots. Click elements, customize their appearance, and export the result as PNG.
+
+## Demo
+
+![Demo page with highlights](screenshot-demo.png)
+![Popup tool interface](screenshot-popup.png)
+
+Try it yourself by opening [`demo.html`](./demo.html) in your browser and clicking the bookmark.
 
 ## Features
 
@@ -53,6 +62,7 @@ Click the bookmark again on the same page to clean up all highlights and open a 
 | `highlight-tool.js` | Source code (readable) |
 | `highlight-tool.min.js` | Minified version (generated via `npm run build`) |
 | `bookmarklet.txt` | Bookmarklet URL — copy this into a bookmark |
+| `demo.html` | Test page for trying the tool |
 | `package.json` | Build script for minification |
 
 ## Development
