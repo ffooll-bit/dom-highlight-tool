@@ -69,7 +69,6 @@ Click the bookmark again on the same page to clean up all highlights and open a 
 | `highlight-tool.js` | Source code (readable) |
 | `highlight-tool.min.js` | Minified version (generated via `npm run build`) |
 | `bookmarklet.txt` | Bookmarklet URL — copy this into a bookmark |
-| `demo.html` | Test page for trying the tool |
 | `package.json` | Build script for minification |
 
 ## Development
