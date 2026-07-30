@@ -16,7 +16,7 @@ A **bookmarklet** to visually highlight DOM elements on any web page and capture
   <img src="docs/screenshots/screenshot-popup-3.png" alt="Tool popup" width="30%">
 </p>
 
-Try it yourself by opening [`demo.html`](./demo.html) in your browser and clicking the bookmark.
+Try it yourself on any web page by clicking the bookmark.
 
 ## Features
 
