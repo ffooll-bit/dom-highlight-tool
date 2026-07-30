@@ -6,8 +6,8 @@ A **bookmarklet** to visually highlight DOM elements on any web page and capture
 
 ## Demo
 
-![Demo page with highlights](screenshot-demo.png)
-![Popup tool interface](screenshot-popup.png)
+![Demo page with highlights](docs/screenshots/screenshot-demo.png)
+![Popup tool interface](docs/screenshots/screenshot-popup.png)
 
 Try it yourself by opening [`demo.html`](./demo.html) in your browser and clicking the bookmark.
 
