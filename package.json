@@ -1,0 +1,12 @@
+{
+  "name": "dom-highlight-tool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bookmarklet for highlighting DOM elements and taking screenshots",
+  "scripts": {
+    "build": "terser highlight-tool.js -o highlight-tool.min.js && node -e \"const fs=require('fs');fs.writeFileSync('bookmarklet.txt','javascript:'+fs.readFileSync('highlight-tool.min.js','utf8'))\""
+  },
+  "devDependencies": {
+    "terser": "^5.0.0"
+  }
+}
