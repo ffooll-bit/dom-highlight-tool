@@ -1,75 +1,98 @@
 # DOM Highlight Tool
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/ffooll-bit/dom-highlight-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/ffooll-bit/dom-highlight-tool/actions/workflows/ci.yml)
+![Language](https://img.shields.io/badge/language-JavaScript-F7DF1E?logo=javascript&logoColor=black)
 
-A **bookmarklet** to visually highlight DOM elements on any web page and capture screenshots. Click elements, customize their appearance, and export the result as PNG.
+A bookmarklet to visually annotate any web page — highlight DOM elements, customise appearance, and export the result as a PNG screenshot. Just a bookmark — no extension, no backend.
 
-## Screenshots
+## Demo
 
 <p align="center">
-  <img src="docs/screenshots/screenshot-demo.png" alt="Demo page with highlights">
+  <img src="docs/screenshots/screenshot-demo.png" alt="Page with multiple highlights applied — each element has a coloured border, numbered badge, and label">
+  <br>
+  <em>Page with active highlights</em>
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/screenshot-popup-1.png" alt="Tool popup" width="30%">
-  <img src="docs/screenshots/screenshot-popup-2.png" alt="Tool popup" width="30%">
-  <img src="docs/screenshots/screenshot-popup-3.png" alt="Tool popup" width="30%">
+  <img src="docs/screenshots/screenshot-popup-1.png" alt="Tool popup showing the list of highlights with controls" width="30%">
+  <img src="docs/screenshots/screenshot-popup-2.png" alt="Customisation panel — border, background, badge, and label settings" width="30%">
+  <img src="docs/screenshots/screenshot-popup-3.png" alt="Capture preview with download button" width="30%">
+  <br>
+  <em>Tool popup (left), area customisation (centre), badge &amp; label position adjusted (right)</em>
 </p>
-
-Try it yourself on any web page by clicking the bookmark.
 
 ## Features
 
-- Click any element on a page to add a highlight
-- Customize border color, width, style (solid/dashed/dotted)
-- Customizable background color and opacity
-- Auto-numbered circular badges (adjustable position, size, color, margin)
-- Editable labels (adjustable position, font size, color, margin)
-- Padding and margin adjustments per highlight
+- Click any element to add a highlight
+- Customise border colour, width, style (solid / dashed / dotted)
+- Background colour and opacity
+- Auto-numbered circular badges (adjustable position, size, colour, margin)
+- Editable labels (adjustable position, font size, colour, margin)
+- Per-highlight padding and margin
 - Reorder or delete highlights
 - Screenshot modes: **Viewport**, **Full Page**, **Highlighted Areas Only**
 - DPI scaling: 1× or 2× for HiDPI captures
 - Preview before download
-- Lightweight, no build step required — just a bookmark
+- Lightweight — no extension, just a bookmark
+
+## How It Works
+
+| Layer | Technology |
+|---|---|
+| Core logic | Vanilla JavaScript (no framework) |
+| Screenshot capture | [html2canvas](https://html2canvas.hertzen.com/) (loaded from CDN) |
+| Minification & build | [terser](https://terser.org/) via npm |
+
+A **bookmarklet** is a browser bookmark that runs JavaScript instead of navigating to a URL. The entire tool is embedded in the bookmark — nothing to install.
 
 ## Install
 
-1. Open [`bookmarklet.txt`](./bookmarklet.txt)
-2. Copy the entire content (starting with `javascript:`)
-3. Create a new bookmark in your browser:
+1. Open [`bookmarklet.txt`](./bookmarklet.txt) in your browser and copy the entire content (starts with `javascript:`)
+2. Create a new bookmark in your browser:
    - **Name:** `HL` (or anything you like)
    - **URL:** paste the copied code
 
 ## Usage
 
+Three simple phases:
+
+### Setup
 1. Open the page you want to screenshot
-2. Click the bookmark — a popup tool opens
-3. Click **New** in the popup → cursor changes to crosshair
-4. Click any element on the page → highlight appears
-5. Customize colors, padding, badge/label position in the popup
-6. Repeat for more highlights (colors cycle automatically)
-7. Select screenshot mode (Viewport / Full Page / Highlight Areas)
-8. Adjust DPI Scale if needed
-9. Click **Capture** → preview appears
+2. Click the bookmark — the tool popup opens
+
+### Highlight
+3. Click **New** in the popup — the cursor changes to a crosshair
+4. Click any element on the page — a highlight appears with a numbered badge
+5. Customise colours, padding, badge and label position in the popup
+6. Repeat for more highlights (colours cycle automatically)
+
+### Capture
+7. Select screenshot mode: **Viewport** / **Full Page** / **Highlight Areas**
+8. Adjust DPI scale if needed (1× or 2×)
+9. Click **Capture** — the preview appears
 10. Click **Download** to save the PNG
 
-Click the bookmark again on the same page to clean up all highlights and open a fresh popup.
+> **Note:** Click the bookmark a second time to clean up all highlights and open a fresh popup.
 
-## Limitations
+## Browser Support
+
+Tested on Chrome (desktop). Other browsers may work but have not been verified. A popup blocker may need to be disabled for the site.
+
+## Known Limitations
 
 - Does not support iframes or Shadow DOM
-- Browser must allow popups (popup blocker)
-- `html2canvas` is loaded from CDN — internet connection required
-- Same-origin pages only (`localhost`, no cross-origin screenshots)
+- `html2canvas` is loaded from CDN — an internet connection is required
+- Cross-origin content may not render in screenshots due to browser CORS policy
 
 ## Files
 
 | File | Description |
 |------|-------------|
-| `highlight-tool.js` | Source code (readable) |
-| `highlight-tool.min.js` | Minified version (generated via `npm run build`) |
+| `highlight-tool.js` | Source code (readable, ~580 lines) |
+| `highlight-tool.min.js` | Minified copy (generated via `npm run build`) |
 | `bookmarklet.txt` | Bookmarklet URL — copy this into a bookmark |
-| `package.json` | Build script for minification |
+| `package.json` | Build script and project metadata |
 
 ## Development
 
@@ -80,6 +103,16 @@ npm run build
 
 This regenerates `highlight-tool.min.js` and `bookmarklet.txt` from `highlight-tool.js` using [terser](https://terser.org/).
 
+## Contributing
+
+PRs are welcome. Before submitting:
+
+1. Run `npm run build` — the build must pass
+2. Keep changes focused on a single concern
+3. Match the existing code style (no framework, no new dependencies)
+
+For bugs or feature requests, [open an issue](https://github.com/ffooll-bit/dom-highlight-tool/issues).
+
 ## License
 
-MIT
+MIT License
