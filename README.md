@@ -4,10 +4,17 @@
 
 A **bookmarklet** to visually highlight DOM elements on any web page and capture screenshots. Click elements, customize their appearance, and export the result as PNG.
 
-## Demo
+## Screenshots
 
-![Demo page with highlights](docs/screenshots/screenshot-demo.png)
-![Popup tool interface](docs/screenshots/screenshot-popup.png)
+<p align="center">
+  <img src="docs/screenshots/screenshot-demo.png" alt="Demo page with highlights">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/screenshot-popup-1.png" alt="Tool popup" width="30%">
+  <img src="docs/screenshots/screenshot-popup-2.png" alt="Tool popup" width="30%">
+  <img src="docs/screenshots/screenshot-popup-3.png" alt="Tool popup" width="30%">
+</p>
 
 Try it yourself by opening [`demo.html`](./demo.html) in your browser and clicking the bookmark.
 
