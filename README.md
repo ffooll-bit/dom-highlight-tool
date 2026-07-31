@@ -1,10 +1,16 @@
-# DOM Highlight Tool
+<div align="center">
+
+<h1>DOM Highlight Tool</h1>
+
+<img src="docs/social-preview.png" alt="DOM Highlight Tool — bookmarklet for highlighting DOM elements and capturing screenshots as PNG">
+
+A bookmarklet for **highlighting DOM elements and capturing screenshots** — click any element to annotate it, customise borders, backgrounds, numbered badges and labels, then export the result as a PNG screenshot. Just a bookmark — no extension, no backend.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/ffooll-bit/dom-highlight-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/ffooll-bit/dom-highlight-tool/actions/workflows/ci.yml)
 ![Language](https://img.shields.io/badge/language-JavaScript-F7DF1E?logo=javascript&logoColor=black)
 
-A bookmarklet to visually annotate any web page — highlight DOM elements, customise appearance, and export the result as a PNG screenshot. Just a bookmark — no extension, no backend.
+</div>
 
 ## Demo
 
