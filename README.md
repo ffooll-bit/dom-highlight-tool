@@ -115,4 +115,4 @@ For bugs or feature requests, [open an issue](https://github.com/ffooll-bit/dom-
 
 ## License
 
-MIT License
+[MIT License](LICENSE)
