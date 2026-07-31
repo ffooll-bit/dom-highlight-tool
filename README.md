@@ -38,11 +38,15 @@ A bookmarklet to visually annotate any web page — highlight DOM elements, cust
 
 ## How It Works
 
+<div align="center">
+
 | Layer | Technology |
 |---|---|
 | Core logic | Vanilla JavaScript (no framework) |
 | Screenshot capture | [html2canvas](https://html2canvas.hertzen.com/) (loaded from CDN) |
 | Minification & build | [terser](https://terser.org/) via npm |
+
+</div>
 
 A **bookmarklet** is a browser bookmark that runs JavaScript instead of navigating to a URL. The entire tool is embedded in the bookmark — nothing to install.
 
@@ -87,12 +91,16 @@ Tested on Chrome (desktop). Other browsers may work but have not been verified. 
 
 ## Files
 
+<div align="center">
+
 | File | Description |
 |------|-------------|
 | `highlight-tool.js` | Source code (readable, ~580 lines) |
 | `highlight-tool.min.js` | Minified copy (generated via `npm run build`) |
 | `bookmarklet.txt` | Bookmarklet URL — copy this into a bookmark |
 | `package.json` | Build script and project metadata |
+
+</div>
 
 ## Development
 
