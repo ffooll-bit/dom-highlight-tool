@@ -123,9 +123,10 @@ Tested on Chrome (desktop). Other browsers may work but have not been verified. 
 ```bash
 npm install
 npm run build
+npm test
 ```
 
-This regenerates `highlight-tool.min.js` and `bookmarklet.txt` from `highlight-tool.js` using [terser](https://terser.org/).
+`npm run build` regenerates three files from `highlight-tool.js` using [terser](https://terser.org/): `highlight-tool.min.js`, `bookmarklet.txt`, and `docs/highlight-tool.min.js` (the copy served by the live demo). `npm test` runs the `node:test` unit suite.
 
 ## Contributing
 
