@@ -2,6 +2,9 @@
   "name": "dom-highlight-tool",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=18"
+  },
   "description": "Bookmarklet for highlighting DOM elements and capturing screenshots",
   "keywords": ["bookmarklet", "screenshot", "dom-highlight", "highlight", "dom"],
   "license": "MIT",

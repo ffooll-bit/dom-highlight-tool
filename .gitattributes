@@ -7,3 +7,5 @@
 LICENSE text
 .gitignore text
 .gitattributes text
+highlight-tool.min.js linguist-generated=true
+bookmarklet.txt linguist-generated=true
