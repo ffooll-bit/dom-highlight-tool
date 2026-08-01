@@ -68,20 +68,60 @@
       '@media (min-width:800px){.rw input[type=number]{padding:5px 8px;font-size:12px}.rw select{padding:5px 8px;font-size:12px}.rw input[type=color]{width:38px;height:30px}}' +
       '</style></head><body>' +
       '<div class="hdr">DOM Highlight Tool</div>' +
-      '<div class="tb"><button id="btn-pick" onclick="opener._HL.togglePick()"><i class=\'ph ph-plus-circle\'></i>New</button><button id="btn-clear" onclick="opener._HL.clearAll();opener._HL.renderPopup();opener._HL.updateToolbar()" disabled><i class=\'ph ph-trash\'></i>Clear</button></div>' +
+      '<div class="tb"><button id="btn-pick"><i class=\'ph ph-plus-circle\'></i>New</button><button id="btn-clear" disabled><i class=\'ph ph-trash\'></i>Clear</button></div>' +
       '<div id="hl-list"></div>' +
       '<div class="sc" style="border-top:1px solid #313244">' +
       '<div class="sh"><i class=\'ph ph-camera\'></i> Screenshot</div>' +
-      '<div class="rw"><label>DPI Scale:</label><select onchange="opener._HL.state.dprScale=parseFloat(this.value);opener._HL.state.captureDirty=true;opener._HL.updateToolbar()"><option value="1">1x</option><option value="2">2x</option></select></div>' +
-      '<div class="rw"><label><input type="radio" name="scmode" value="viewport" checked style="margin:0" onchange=\'opener._HL.state.screenshotMode=this.value;opener._HL.state.captureDirty=true;opener._HL.updateToolbar()\'> Viewport</label>' +
-      '<label><input type="radio" name="scmode" value="fullpage" style="margin:0" onchange=\'opener._HL.state.screenshotMode=this.value;opener._HL.state.captureDirty=true;opener._HL.updateToolbar()\'> Full</label>' +
-      '<label><input type="radio" name="scmode" value="highlights" style="margin:0" onchange=\'opener._HL.state.screenshotMode=this.value;opener._HL.state.captureDirty=true;opener._HL.updateToolbar()\'> Areas</label></div>' +
-      '<div style="display:flex;gap:6px"><button class="bcp" onclick="opener._HL.capture()"><i class=\'ph ph-camera\'></i> Capture</button><button class="bdl" id="dlbtn" disabled onclick="opener._HL.download()"><i class=\'ph ph-download\'></i> Download</button></div>' +
+      '<div class="rw"><label>DPI Scale:</label><select id="dpr"><option value="1">1x</option><option value="2">2x</option></select></div>' +
+      '<div class="rw"><label><input type="radio" name="scmode" value="viewport" checked style="margin:0"> Viewport</label>' +
+      '<label><input type="radio" name="scmode" value="fullpage" style="margin:0"> Full</label>' +
+      '<label><input type="radio" name="scmode" value="highlights" style="margin:0"> Areas</label></div>' +
+      '<div style="display:flex;gap:6px"><button class="bcp"><i class=\'ph ph-camera\'></i> Capture</button><button class="bdl" id="dlbtn" disabled><i class=\'ph ph-download\'></i> Download</button></div>' +
       '</div>' +
       '<div class="pv" id="pv">Preview will appear here</div>' +
       '<div class="ft">Click element to highlight</div>' +
       '</body></html>');
     popup.document.close();
+
+    wirePopupControls();
+  }
+
+  // Attach popup controls via addEventListener instead of inline onclick/onchange:
+  // an about:blank popup inherits the page's CSP, which blocks inline handlers
+  // under a strict policy. Listeners registered from here run in the opener's
+  // (already allowed) script context, so they work regardless of CSP.
+  function wirePopupControls() {
+    var dpr = popup.document.getElementById('dpr');
+    if (dpr) dpr.addEventListener('change', function() {
+      state.dprScale = parseFloat(dpr.value);
+      state.captureDirty = true;
+      updateToolbar();
+    });
+
+    var modes = popup.document.querySelectorAll('input[name="scmode"]');
+    for (var i = 0; i < modes.length; i++) {
+      modes[i].addEventListener('change', function() {
+        state.screenshotMode = this.value;
+        state.captureDirty = true;
+        updateToolbar();
+      });
+    }
+
+    var pick = popup.document.getElementById('btn-pick');
+    if (pick) pick.addEventListener('click', togglePick);
+
+    var clear = popup.document.getElementById('btn-clear');
+    if (clear) clear.addEventListener('click', function() {
+      clearAll();
+      renderPopup();
+      updateToolbar();
+    });
+
+    var captureBtn = popup.document.querySelector('.bcp');
+    if (captureBtn) captureBtn.addEventListener('click', capture);
+
+    var dl = popup.document.getElementById('dlbtn');
+    if (dl) dl.addEventListener('click', download);
   }
 
   var GRIDS = ['tl','tc','tr','ml','mc','mr','bl','bc','br'];
