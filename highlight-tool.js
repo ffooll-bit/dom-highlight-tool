@@ -360,8 +360,8 @@
         if (state.highlights[j].id === id) { hl = state.highlights[j]; break; }
       }
       if (!hl) continue;
-      var left = parseFloat(div.style.left) + window.scrollX;
-      var top = parseFloat(div.style.top) + window.scrollY;
+      var left = parseFloat(div.style.left) + hl.rect.scrollX;
+      var top = parseFloat(div.style.top) + hl.rect.scrollY;
       div.style.position = 'absolute';
       div.style.left = left + 'px';
       div.style.top = top + 'px';
@@ -378,8 +378,8 @@
         if (state.highlights[j].id === id) { hl = state.highlights[j]; break; }
       }
       if (!hl) continue;
-      var left = parseFloat(div.style.left) - window.scrollX;
-      var top = parseFloat(div.style.top) - window.scrollY;
+      var left = parseFloat(div.style.left) - hl.rect.scrollX;
+      var top = parseFloat(div.style.top) - hl.rect.scrollY;
       div.style.position = 'fixed';
       div.style.left = left + 'px';
       div.style.top = top + 'px';
