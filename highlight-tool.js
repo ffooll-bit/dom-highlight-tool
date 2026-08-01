@@ -1,3 +1,7 @@
+/*
+ * DOM Highlight Tool — bookmarklet that highlights elements on any page
+ * and captures the result as a PNG screenshot.
+ */
 (function() {
   if (window._HL) { window._HL.cleanup(); }
 
@@ -12,14 +16,17 @@
   var popup = null;
   var lastBlob = null;
 
+  // Escape text for safe interpolation into HTML (safe inside double-quoted attributes).
   function htmlEncode(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
+  // Create the control popup window. The page (opener) stays the tool's source of truth.
   function openPopup() {
     popup = window.open('', 'hl', 'width=390,height=680,scrollbars=yes');
     if (!popup) { alert('Popup blocked! Allow popup for this site and try again.'); return; }
 
+    // Inline HTML for the control popup (styling and markup in one string).
     popup.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>DOM Highlight Tool</title>' +
       '<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">' +
       '<style>' +
@@ -79,6 +86,7 @@
 
   var GRIDS = ['tl','tc','tr','ml','mc','mr','bl','bc','br'];
 
+  // Rebuild the highlight list UI inside the popup window.
   function renderPopup() {
     if (!popup || popup.closed) return;
     var list = popup.document.getElementById('hl-list');
@@ -156,13 +164,14 @@
     return s;
   }
 
-  function updateHL(id, section, key, a4, a5) {
+  // Update one field of a highlight: 4 args set section[key], 5 args set section[key][subKey].
+  function updateHL(id, section, key, subKey, value) {
     for (var i = 0; i < state.highlights.length; i++) {
       if (state.highlights[i].id === id) {
-        if (a5 !== undefined) {
-          state.highlights[i][section][key][a4] = a5;
+        if (value !== undefined) {
+          state.highlights[i][section][key][subKey] = value;
         } else {
-          state.highlights[i][section][key] = a4;
+          state.highlights[i][section][key] = subKey;
         }
         break;
       }
@@ -172,6 +181,7 @@
     renderPopup();
   }
 
+  // Remove a highlight and renumber the remaining badge numbers.
   function removeHL(id) {
     for (var i = 0; i < state.highlights.length; i++) {
       if (state.highlights[i].id === id) { state.highlights.splice(i, 1); break; }
@@ -184,6 +194,7 @@
     renderPopup();
   }
 
+  // Reorder a highlight (dir -1 = up, 1 = down) for the badge sequence.
   function moveHL(id, dir) {
     for (var i = 0; i < state.highlights.length; i++) {
       if (state.highlights[i].id === id) {
@@ -200,12 +211,14 @@
     renderPopup();
   }
 
+  // Toggle element-picking mode (popup's New/Cancel button).
   function togglePick() {
     if (state.picking) { disablePick(); }
     else { enablePick(); }
     updateToolbar();
   }
 
+  // Sync popup buttons (New/Cancel, Clear, Download) with current state.
   function updateToolbar() {
     if (!popup || popup.closed) return;
     var btn = popup.document.getElementById('btn-pick');
@@ -219,12 +232,14 @@
     if (dl) dl.disabled = state.captureDirty || !lastBlob;
   }
 
+  // Start a screenshot; shows "Capturing..." in the preview.
   function capture() {
     var pv = popup.document.getElementById('pv');
     if (pv) pv.innerHTML = 'Capturing...';
     takeScreenshot();
   }
 
+  // Download the last captured screenshot as a PNG.
   function download() {
     if (!lastBlob) return;
     var a = document.createElement('a');
@@ -234,8 +249,11 @@
     URL.revokeObjectURL(a.href);
   }
 
+  // 10-colour palette, cycled by highlight id.
   var PALETTE = ['#5f7dbf','#5f8a6a','#8a7a55','#b07050','#b0657a','#5f80a0','#5f9080','#8a6a9a','#a0606a','#6a7a8a'];
 
+  // New highlight from a picked element. rect holds viewport coords plus the
+  // scroll position at pick time, so captures can reconstruct absolute page coords.
   function getDefaultHighlight(rect, selector) {
     var num = state.nextId++;
     var idx = num - 1;
@@ -258,6 +276,7 @@
     };
   }
 
+  // Build a CSS selector for an element: id if present, else a tag/nth-child chain.
   function generateSelector(el) {
     if (!el || el === document.body || el === document.documentElement) return '';
     if (el.id) return '#' + CSS.escape(el.id);
@@ -274,6 +293,8 @@
   var hoverOverlay = null;
   var escHandler = null;
 
+  // Enter picking mode: a full-page transparent overlay that highlights hovered
+  // elements and creates a highlight on click. Press Esc to cancel.
   function enablePick() {
     if (state.picking) return;
     state.picking = true;
@@ -333,6 +354,7 @@
     document.addEventListener('keydown', escHandler);
   }
 
+  // Leave picking mode and remove overlay + Esc listeners.
   function disablePick() {
     state.picking = false;
     if (pickerOverlay) { pickerOverlay.remove(); pickerOverlay = null; }
@@ -341,6 +363,7 @@
     updateToolbar();
   }
 
+  // Remove all highlights and reset the badge counter.
   function clearAll() {
     state.highlights = [];
     state.nextId = 1;
@@ -349,6 +372,7 @@
     renderPopup();
   }
 
+  // Full teardown — runs when the bookmark is activated again.
   function cleanup() {
     clearAll();
     disablePick();
@@ -358,8 +382,12 @@
     delete window._HL;
   }
 
+  // Snapshot of current highlights.
   function getHighlights() { return state.highlights.slice(); }
 
+  // Overlays are position:fixed at pick-time viewport coords. For full-page
+  // capture, convert to absolute page coords using each highlight's stored
+  // scroll position (the user may have scrolled since the element was picked).
   function convertHighlightsToAbsolute() {
     var divs = document.querySelectorAll('.hl-overlay');
     for (var i = 0; i < divs.length; i++) {
@@ -378,6 +406,7 @@
     }
   }
 
+  // Reverse of convertHighlightsToAbsolute — back to fixed viewport coords.
   function convertHighlightsToFixed() {
     var divs = document.querySelectorAll('.hl-overlay');
     for (var i = 0; i < divs.length; i++) {
@@ -396,6 +425,7 @@
     }
   }
 
+  // Re-draw all overlay boxes on the page (border, background, badge, label).
   function renderHighlights() {
     var old = document.querySelectorAll('.hl-overlay');
     for (var i = 0; i < old.length; i++) old[i].remove();
@@ -458,6 +488,7 @@
     return base + gridPosCSS(h.label.grid, h.label.margin);
   }
 
+  // CSS that anchors a badge/label to one of nine grid positions with x/y margin.
   function gridPosCSS(grid, m) {
     var y = m ? m.y || 0 : 0;
     var x = m ? m.x || 0 : 0;
@@ -476,6 +507,7 @@
     }
   }
 
+  // Load html2canvas on demand (CDN), then capture in the current mode.
   function takeScreenshot() {
     var mode = state.screenshotMode;
     var scale = state.dprScale || 1;
@@ -496,6 +528,7 @@
     document.head.appendChild(script);
   }
 
+  // Capture per screenshotMode: viewport, full page, or a crop around highlights.
   function doCapture(mode, scale) {
     var docEl = document.documentElement;
     var vw = window.innerWidth;
@@ -528,6 +561,7 @@
       return html2canvas(docEl, { width: vw, height: vh, windowWidth: vw, windowHeight: vh, useCORS: true, scale: scale });
     }
 
+    // Crop a full-page canvas to the bounding box of all highlights (+ padding).
     function cropToHighlights(canvas) {
       var areas = state.highlights.map(function(h) {
         return {
