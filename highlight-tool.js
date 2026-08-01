@@ -28,16 +28,15 @@
 
     // Inline HTML for the control popup (styling and markup in one string).
     popup.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>DOM Highlight Tool</title>' +
-      '<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">' +
       '<style>' +
       'body{margin:0 auto;padding:0 4px;font:13px/1.4 -apple-system,sans-serif;background:#1e1e2e;color:#cdd6f4;display:flex;flex-direction:column;height:100vh;overflow:hidden;max-width:480px}' +
       '*{box-sizing:border-box}' +
-      '.hdr{background:#181825;padding:8px 12px;font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #313244;flex-shrink:0}' +
+      '.hdr{background:#181825;padding:8px 12px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #313244;flex-shrink:0}' +
       '.tb{padding:8px;display:flex;gap:6px;flex-shrink:0}' +
       '.tb button{flex:1;padding:6px 12px;border:1px solid #45475a;background:#313244;color:#cdd6f4;border-radius:6px;cursor:pointer;font-size:12px}' +
       '.tb button:hover{background:#45475a}' +
       '.tb button:disabled{opacity:.4;cursor:default}' +
-      '.tb button i{margin-right:4px;font-size:14px}' +
+      '.tb button svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}' +
       '#hl-list{flex:1;overflow-y:auto}' +
       '.item{border:1px solid #313244;border-radius:6px;margin:6px 8px;padding:12px;background:#181825}' +
       '.ih{display:flex;align-items:center;gap:8px;margin-bottom:8px}' +
@@ -49,8 +48,10 @@
       '.rw input[type=color]{width:36px;height:28px;padding:0;border:1px solid #45475a;border-radius:4px;cursor:pointer;background:none}' +
       '.rw select{flex:3;min-width:0;padding:3px 4px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:11px}' +
       '.sh{margin:5px 0 2px;padding-top:4px;border-top:1px solid #313244;font-size:10px;font-weight:700;color:#585b70;text-transform:uppercase;letter-spacing:.5px}' +
-      '.del{background:none;border:none;color:#f38ba8;cursor:pointer;font-size:14px;padding:2px 6px}' +
-      '.mv{background:none;border:none;color:#89b4fa;cursor:pointer;font-size:14px;padding:2px 4px}' +
+      '.sh svg{width:13px;height:13px;vertical-align:-2px;margin-right:3px}' +
+      '.del{background:none;border:none;color:#f38ba8;cursor:pointer;padding:2px 6px}' +
+      '.del svg,.mv svg{width:14px;height:14px;vertical-align:-2px}' +
+      '.mv{background:none;border:none;color:#89b4fa;cursor:pointer;padding:2px 4px}' +
       '.mv:disabled{opacity:.4;cursor:default}' +
       '.sc{background:#11111b;margin:6px 8px;padding:10px;border-radius:6px;flex-shrink:0}' +
       '.sc label{font-size:11px;color:#a6adc8}' +
@@ -67,16 +68,16 @@
       '@media (min-width:560px){.item{padding:14px;margin:8px 12px}.rw{gap:8px}.rw input[type=number]{padding:4px 6px}.rw select{padding:4px 6px}}' +
       '@media (min-width:800px){.rw input[type=number]{padding:5px 8px;font-size:12px}.rw select{padding:5px 8px;font-size:12px}.rw input[type=color]{width:38px;height:30px}}' +
       '</style></head><body>' +
-      '<div class="hdr">DOM Highlight Tool</div>' +
-      '<div class="tb"><button id="btn-pick"><i class=\'ph ph-plus-circle\'></i>New</button><button id="btn-clear" disabled><i class=\'ph ph-trash\'></i>Clear</button></div>' +
+      '<div class="hdr"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" stroke="#89b4fa" stroke-width="2.4"/><circle cx="17.5" cy="6.5" r="4.2" fill="#89b4fa"/></svg><span>DOM Highlight Tool</span></div>' +
+      '<div class="tb"><button id="btn-pick">' + icon('plus-circle') + 'New</button><button id="btn-clear" disabled>' + icon('trash') + 'Clear</button></div>' +
       '<div id="hl-list"></div>' +
       '<div class="sc" style="border-top:1px solid #313244">' +
-      '<div class="sh"><i class=\'ph ph-camera\'></i> Screenshot</div>' +
+      '<div class="sh">' + icon('camera') + ' Screenshot</div>' +
       '<div class="rw"><label>DPI Scale:</label><select id="dpr"><option value="1">1x</option><option value="2">2x</option></select></div>' +
       '<div class="rw"><label><input type="radio" name="scmode" value="viewport" checked style="margin:0"> Viewport</label>' +
       '<label><input type="radio" name="scmode" value="fullpage" style="margin:0"> Full</label>' +
       '<label><input type="radio" name="scmode" value="highlights" style="margin:0"> Areas</label></div>' +
-      '<div style="display:flex;gap:6px"><button class="bcp"><i class=\'ph ph-camera\'></i> Capture</button><button class="bdl" id="dlbtn" disabled><i class=\'ph ph-download\'></i> Download</button></div>' +
+      '<div style="display:flex;gap:6px"><button class="bcp">' + icon('camera') + ' Capture</button><button class="bdl" id="dlbtn" disabled>' + icon('download') + ' Download</button></div>' +
       '</div>' +
       '<div class="pv" id="pv">Preview will appear here</div>' +
       '<div class="ft">Click element to highlight</div>' +
@@ -122,9 +123,55 @@
 
     var dl = popup.document.getElementById('dlbtn');
     if (dl) dl.addEventListener('click', download);
+
+    var list = popup.document.getElementById('hl-list');
+    if (list) {
+      list.addEventListener('click', onHlListClick);
+      list.addEventListener('change', onHlListChange);
+    }
+  }
+
+  // Delegated handlers for the highlight list: data-* attributes replace the
+  // inline onclick/onchange that strict page CSP blocks (same as the popup's
+  // static controls). Attached once to #hl-list; survives innerHTML swaps.
+  function onHlListClick(e) {
+    var el = e.target;
+    while (el && el !== e.currentTarget && !el.getAttribute('data-hl')) el = el.parentNode;
+    if (!el || el === e.currentTarget) return;
+    var act = el.getAttribute('data-hl');
+    var id = parseInt(el.getAttribute('data-id'), 10);
+    if (isNaN(id)) return;
+    if (act === 'move') moveHL(id, parseInt(el.getAttribute('data-dir'), 10) || 0);
+    else if (act === 'remove') removeHL(id);
+  }
+
+  function onHlListChange(e) {
+    var el = e.target;
+    if (!el.hasAttribute('data-hl')) return;
+    var id = parseInt(el.getAttribute('data-id'), 10);
+    if (isNaN(id)) return;
+    var sub = el.getAttribute('data-sub');
+    var value = el.hasAttribute('data-int') ? (parseInt(el.value, 10) || 0) : el.value;
+    if (sub) updateHL(id, el.getAttribute('data-sec'), el.getAttribute('data-key'), sub, value);
+    else updateHL(id, el.getAttribute('data-sec'), el.getAttribute('data-key'), value);
   }
 
   var GRIDS = ['tl','tc','tr','ml','mc','mr','bl','bc','br'];
+
+  // Inline SVG icons: no external font or stylesheet, so they work under any
+  // page CSP and offline (the old Phosphor web font was CSP-blocked).
+  var ICONS = {
+    'plus-circle': '<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+    'x-circle': '<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',
+    trash: '<path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/>',
+    camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="14" r="3.5"/>',
+    download: '<path d="M12 4v10m0 0l-4-4m4 4l4-4M5 20h14"/>',
+    'caret-up': '<path d="M6 14l6-6 6 6"/>',
+    'caret-down': '<path d="M6 10l6 6 6-6"/>'
+  };
+  function icon(name) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
+  }
 
   // Rebuild the highlight list UI inside the popup window.
   function renderPopup() {
@@ -143,51 +190,51 @@
       html += '<div class="item">' +
         '<div class="ih">' +
         '<span class="bpv" style="background:' + h.badge.color + '">' + h.badge.number + '</span>' +
-        '<input type="text" value="' + htmlEncode(h.label.text || '') + '" placeholder="Label..." onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'text\',this.value)">' +
-        '<button class="mv" onclick="opener._HL.moveHL(' + h.id + ',-1)"' + (i === 0 ? ' disabled' : '') + '><i class=\'ph ph-caret-up\'></i></button>' +
-        '<button class="mv" onclick="opener._HL.moveHL(' + h.id + ',1)"' + (i === hs.length - 1 ? ' disabled' : '') + '><i class=\'ph ph-caret-down\'></i></button>' +
-        '<button class="del" onclick="opener._HL.removeHL(' + h.id + ')"><i class=\'ph ph-trash\'></i></button></div>' +
+        '<input type="text" value="' + htmlEncode(h.label.text || '') + '" placeholder="Label..." data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="text">' +
+        '<button class="mv" data-hl="move" data-id="' + h.id + '" data-dir="-1"' + (i === 0 ? ' disabled' : '') + '>' + icon('caret-up') + '</button>' +
+        '<button class="mv" data-hl="move" data-id="' + h.id + '" data-dir="1"' + (i === hs.length - 1 ? ' disabled' : '') + '>' + icon('caret-down') + '</button>' +
+        '<button class="del" data-hl="remove" data-id="' + h.id + '">' + icon('trash') + '</button></div>' +
         '<div class="sh">border</div>' +
-        '<div class="rw"><label>Style:</label><input type="color" value="' + h.border.color + '" onchange="opener._HL.updateHL(' + h.id + ',\'border\',\'color\',this.value)">' +
-        '<input type="number" value="' + h.border.width + '" min="0" max="10" onchange="opener._HL.updateHL(' + h.id + ',\'border\',\'width\',parseInt(this.value,10)||0)">' +
-        '<select onchange="opener._HL.updateHL(' + h.id + ',\'border\',\'style\',this.value)">' +
+        '<div class="rw"><label>Style:</label><input type="color" value="' + h.border.color + '" data-hl="update" data-id="' + h.id + '" data-sec="border" data-key="color">' +
+        '<input type="number" value="' + h.border.width + '" min="0" max="10" data-hl="update" data-id="' + h.id + '" data-sec="border" data-key="width" data-int>' +
+        '<select data-hl="update" data-id="' + h.id + '" data-sec="border" data-key="style">' +
         '<option value="solid"' + (h.border.style === 'solid' ? ' selected' : '') + '>Solid</option>' +
         '<option value="dashed"' + (h.border.style === 'dashed' ? ' selected' : '') + '>Dash</option>' +
         '<option value="dotted"' + (h.border.style === 'dotted' ? ' selected' : '') + '>Dot</option></select></div>' +
         '<div class="sh">background</div>' +
-        '<div class="rw"><label>Color:</label><input type="color" value="' + h.background.color + '" onchange="opener._HL.updateHL(' + h.id + ',\'background\',\'color\',this.value)">' +
-        '<label>Opacity:</label><input type="number" value="' + h.background.opacity + '" min="0" max="100" onchange="opener._HL.updateHL(' + h.id + ',\'background\',\'opacity\',parseInt(this.value,10)||0)"></div>' +
+        '<div class="rw"><label>Color:</label><input type="color" value="' + h.background.color + '" data-hl="update" data-id="' + h.id + '" data-sec="background" data-key="color">' +
+        '<label>Opacity:</label><input type="number" value="' + h.background.opacity + '" min="0" max="100" data-hl="update" data-id="' + h.id + '" data-sec="background" data-key="opacity" data-int></div>' +
         '<div class="sh">area</div>' +
         '<div class="rw"><label>Padding:</label>' +
-        '<input type="number" value="' + h.padding.top + '" placeholder="T" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'top\',parseInt(this.value,10)||0)">' +
-        '<input type="number" value="' + h.padding.right + '" placeholder="R" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'right\',parseInt(this.value,10)||0)">' +
-        '<input type="number" value="' + h.padding.bottom + '" placeholder="B" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'bottom\',parseInt(this.value,10)||0)">' +
-        '<input type="number" value="' + h.padding.left + '" placeholder="L" onchange="opener._HL.updateHL(' + h.id + ',\'padding\',\'left\',parseInt(this.value,10)||0)"></div>' +
+        '<input type="number" value="' + h.padding.top + '" placeholder="T" data-hl="update" data-id="' + h.id + '" data-sec="padding" data-key="top" data-int>' +
+        '<input type="number" value="' + h.padding.right + '" placeholder="R" data-hl="update" data-id="' + h.id + '" data-sec="padding" data-key="right" data-int>' +
+        '<input type="number" value="' + h.padding.bottom + '" placeholder="B" data-hl="update" data-id="' + h.id + '" data-sec="padding" data-key="bottom" data-int>' +
+        '<input type="number" value="' + h.padding.left + '" placeholder="L" data-hl="update" data-id="' + h.id + '" data-sec="padding" data-key="left" data-int></div>' +
         '<div class="rw"><span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">X</span>' +
-        '<input type="number" value="' + h.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'margin\',\'x\',parseInt(this.value,10)||0)">' +
+        '<input type="number" value="' + h.margin.x + '" data-hl="update" data-id="' + h.id + '" data-sec="margin" data-key="x" data-int>' +
         '<span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">Y</span>' +
-        '<input type="number" value="' + h.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'margin\',\'y\',parseInt(this.value,10)||0)"></div>' +
+        '<input type="number" value="' + h.margin.y + '" data-hl="update" data-id="' + h.id + '" data-sec="margin" data-key="y" data-int></div>' +
         '<div class="sh">badge</div>' +
         '<div class="rw"><label>Grid Position:</label>' +
-        '<select onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'grid\',this.value)">' +
+        '<select data-hl="update" data-id="' + h.id + '" data-sec="badge" data-key="grid">' +
         gridOptions(h.badge.grid) + '</select>' +
-        '<label>Size:</label><input type="number" value="' + h.badge.size + '" min="12" max="80" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'size\',parseInt(this.value,10)||0)">' +
-        '<input type="color" value="' + h.badge.color + '" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'color\',this.value)"></div>' +
+        '<label>Size:</label><input type="number" value="' + h.badge.size + '" min="12" max="80" data-hl="update" data-id="' + h.id + '" data-sec="badge" data-key="size" data-int>' +
+        '<input type="color" value="' + h.badge.color + '" data-hl="update" data-id="' + h.id + '" data-sec="badge" data-key="color"></div>' +
         '<div class="rw"><span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">X</span>' +
-        '<input type="number" value="' + h.badge.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'margin\',\'x\',parseInt(this.value,10)||0)">' +
+        '<input type="number" value="' + h.badge.margin.x + '" data-hl="update" data-id="' + h.id + '" data-sec="badge" data-key="margin" data-sub="x" data-int>' +
         '<span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">Y</span>' +
-        '<input type="number" value="' + h.badge.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'badge\',\'margin\',\'y\',parseInt(this.value,10)||0)">' +
+        '<input type="number" value="' + h.badge.margin.y + '" data-hl="update" data-id="' + h.id + '" data-sec="badge" data-key="margin" data-sub="y" data-int>' +
         '</div>' +
         '<div class="sh">label</div>' +
         '<div class="rw"><label>Grid Position:</label>' +
-        '<select onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'grid\',this.value)">' +
+        '<select data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="grid">' +
         gridOptions(h.label.grid) + '</select>' +
-        '<label>Size:</label><input type="number" value="' + h.label.fontSize + '" min="8" max="72" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'fontSize\',parseInt(this.value,10)||0)">' +
-        '<input type="color" value="' + h.label.color + '" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'color\',this.value)"></div>' +
+        '<label>Size:</label><input type="number" value="' + h.label.fontSize + '" min="8" max="72" data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="fontSize" data-int>' +
+        '<input type="color" value="' + h.label.color + '" data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="color"></div>' +
         '<div class="rw"><span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">X</span>' +
-        '<input type="number" value="' + h.label.margin.x + '" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'margin\',\'x\',parseInt(this.value,10)||0)">' +
+        '<input type="number" value="' + h.label.margin.x + '" data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="margin" data-sub="x" data-int>' +
         '<span style="font:10px sans-serif;color:#a6adc8;margin:0 2px">Y</span>' +
-        '<input type="number" value="' + h.label.margin.y + '" onchange="opener._HL.updateHL(' + h.id + ',\'label\',\'margin\',\'y\',parseInt(this.value,10)||0)">' +
+        '<input type="number" value="' + h.label.margin.y + '" data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="margin" data-sub="y" data-int>' +
         '</div></div>';
     }
     list.innerHTML = html;
@@ -269,8 +316,8 @@
     if (!popup || popup.closed) return;
     var btn = popup.document.getElementById('btn-pick');
     if (btn) {
-      if (state.picking) { btn.innerHTML = "<i class='ph ph-x-circle'></i>Cancel"; }
-      else { btn.innerHTML = "<i class='ph ph-plus-circle'></i>New"; }
+      if (state.picking) { btn.innerHTML = icon('x-circle') + 'Cancel'; }
+      else { btn.innerHTML = icon('plus-circle') + 'New'; }
     }
     var clr = popup.document.getElementById('btn-clear');
     if (clr) clr.disabled = state.highlights.length === 0;
