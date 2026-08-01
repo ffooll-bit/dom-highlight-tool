@@ -21,8 +21,14 @@ Thanks for taking the time to contribute to DOM Highlight Tool. This project is 
   npm run build
   ```
 
-  This rewrites `highlight-tool.min.js` (minified via [terser](https://terser.org/)) and `bookmarklet.txt` (the `javascript:` URL users copy into a bookmark).
-- **Always commit the regenerated artifacts.** CI runs the build and fails the job if the committed `highlight-tool.min.js` / `bookmarklet.txt` drift from the output — do not skip the build.
+  This rewrites `highlight-tool.min.js` (minified via [terser](https://terser.org/)), `bookmarklet.txt` (the `javascript:` URL users copy into a bookmark) and `docs/highlight-tool.min.js` (the copy served by the live demo).
+- **Always commit the regenerated artifacts.** CI runs the build and fails the job if the committed `highlight-tool.min.js` / `bookmarklet.txt` / `docs/highlight-tool.min.js` drift from the output — do not skip the build.
+- Run the unit suite before opening a PR:
+
+  ```bash
+  npm test
+  ```
+
 - Test manually by copying the content of `bookmarklet.txt` into a browser bookmark and activating it on a test page (Chrome desktop is the supported target).
 
 ## Branching and pull requests
