@@ -17,7 +17,7 @@
     "url": "https://github.com/ffooll-bit/dom-highlight-tool/issues"
   },
   "scripts": {
-    "build": "terser highlight-tool.js -o highlight-tool.min.js && node -e \"const fs=require('fs');fs.writeFileSync('bookmarklet.txt','javascript:'+fs.readFileSync('highlight-tool.min.js','utf8'))\"",
+    "build": "terser highlight-tool.js -o highlight-tool.min.js && node -e \"const fs=require('fs');fs.writeFileSync('bookmarklet.txt','javascript:'+fs.readFileSync('highlight-tool.min.js','utf8'));fs.copyFileSync('highlight-tool.min.js','docs/highlight-tool.min.js')\"",
     "test": "node --test test/core.test.js"
   },
   "devDependencies": {

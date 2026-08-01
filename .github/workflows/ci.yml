@@ -19,4 +19,4 @@ jobs:
       - run: npm run build
       - run: npm test
       - name: Verify committed artifacts match the build
-        run: git diff --exit-code -- highlight-tool.min.js bookmarklet.txt
+        run: git diff --exit-code -- highlight-tool.min.js bookmarklet.txt docs/highlight-tool.min.js
