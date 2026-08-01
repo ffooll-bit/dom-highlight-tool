@@ -5,6 +5,9 @@
 (function() {
   if (window._HL) { window._HL.cleanup(); }
 
+  // Popup header version, kept in sync with package.json (the build verifies it).
+  var VERSION = '1.1.0';
+
   var state = {
     highlights: [],
     nextId: 1,
@@ -32,6 +35,7 @@
       'body{margin:0 auto;padding:0 4px;font:13px/1.4 -apple-system,sans-serif;background:#1e1e2e;color:#cdd6f4;display:flex;flex-direction:column;height:100vh;overflow:hidden;max-width:480px}' +
       '*{box-sizing:border-box}' +
       '.hdr{background:#181825;padding:8px 12px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #313244;flex-shrink:0}' +
+      '.ver{color:#585b70;font-size:11px;font-weight:400}' +
       '.tb{padding:8px;display:flex;gap:6px;flex-shrink:0}' +
       '.tb button{flex:1;padding:6px 12px;border:1px solid #45475a;background:#313244;color:#cdd6f4;border-radius:6px;cursor:pointer;font-size:12px}' +
       '.tb button:hover{background:#45475a}' +
@@ -69,7 +73,7 @@
       '@media (min-width:560px){.item{padding:14px;margin:8px 12px}.rw{gap:8px}.rw input[type=number]{padding:4px 6px}.rw select{padding:4px 6px}}' +
       '@media (min-width:800px){.rw input[type=number]{padding:5px 8px;font-size:12px}.rw select{padding:5px 8px;font-size:12px}.rw input[type=color]{width:38px;height:30px}}' +
       '</style></head><body>' +
-      '<div class="hdr"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" stroke="#89b4fa" stroke-width="2.4"/><circle cx="17.5" cy="6.5" r="4.2" fill="#89b4fa"/></svg><span>DOM Highlight Tool</span></div>' +
+      '<div class="hdr"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" stroke="#89b4fa" stroke-width="2.4"/><circle cx="17.5" cy="6.5" r="4.2" fill="#89b4fa"/></svg><span>DOM Highlight Tool</span><span class="ver">v' + VERSION + '</span></div>' +
       '<div class="tb"><button id="btn-pick">' + icon('plus-circle') + 'New</button><button id="btn-clear" disabled>' + icon('trash') + 'Clear</button></div>' +
       '<div id="hl-list"></div>' +
       '<div class="sc" style="border-top:1px solid #313244">' +
@@ -367,14 +371,13 @@
 
   // New highlight from a picked element. rect holds viewport coords plus the
   // scroll position at pick time, so captures can reconstruct absolute page coords.
-  function getDefaultHighlight(rect, selector) {
+  function getDefaultHighlight(rect) {
     var num = state.nextId++;
     var idx = num - 1;
     while (idx >= 10) idx -= 10;
     var c = PALETTE[idx];
     return {
       id: num,
-      selector: selector,
       rect: {
         top: rect.top, left: rect.left,
         width: rect.width, height: rect.height,
@@ -387,19 +390,6 @@
       badge: { visible: true, number: state.highlights.length + 1, grid: 'tr', size: 28, margin: { x: 0, y: 0 }, color: c, textColor: '#ffffff' },
       label: { visible: true, text: '', grid: 'tl', fontSize: 11, margin: { x: 0, y: 0 }, color: '#ffffff' }
     };
-  }
-
-  // Build a CSS selector for an element: id if present, else a tag/nth-child chain.
-  function generateSelector(el) {
-    if (!el || el === document.body || el === document.documentElement) return '';
-    if (el.id) return '#' + CSS.escape(el.id);
-    var parent = el.parentElement;
-    if (!parent) return el.tagName.toLowerCase();
-    var idx = 1;
-    for (var i = 0; i < parent.children.length; i++) {
-      if (parent.children[i] === el) { idx = i + 1; break; }
-    }
-    return generateSelector(parent) + ' > ' + el.tagName.toLowerCase() + ':nth-child(' + idx + ')';
   }
 
   var pickerOverlay = null;
@@ -447,9 +437,8 @@
       if (!el || el === document.body || el === document.documentElement ||
           el.classList.contains('hl-picker-overlay') || el.classList.contains('hl-hover-overlay') || el.classList.contains('hl-overlay')) return;
       var rect = el.getBoundingClientRect();
-      var selector = generateSelector(el);
       disablePick();
-      var hl = getDefaultHighlight(rect, selector);
+      var hl = getDefaultHighlight(rect);
       state.highlights.push(hl);
       renderHighlights();
       renderPopup();
