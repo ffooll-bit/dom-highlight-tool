@@ -272,6 +272,7 @@
 
   var pickerOverlay = null;
   var hoverOverlay = null;
+  var escHandler = null;
 
   function enablePick() {
     if (state.picking) return;
@@ -322,12 +323,21 @@
 
     pickerOverlay.addEventListener('mousemove', onMove);
     pickerOverlay.addEventListener('click', onClick);
+
+    escHandler = function(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        disablePick();
+      }
+    };
+    document.addEventListener('keydown', escHandler);
   }
 
   function disablePick() {
     state.picking = false;
     if (pickerOverlay) { pickerOverlay.remove(); pickerOverlay = null; }
     if (hoverOverlay) { hoverOverlay.remove(); hoverOverlay = null; }
+    if (escHandler) { document.removeEventListener('keydown', escHandler); escHandler = null; }
     updateToolbar();
   }
 
