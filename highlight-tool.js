@@ -58,6 +58,7 @@
       '.sc input[type=radio]{margin-right:4px}' +
       '.sc .rw label{flex:1;display:flex;align-items:center;gap:4px}' +
       '.bcp,.bdl{flex:1;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:13px;margin:4px 0}' +
+      '.bcp svg,.bdl svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}' +
       '.bcp{background:#89b4fa;color:#1e1e2e}' +
       '.bdl{background:#a6e3a1;color:#1e1e2e}' +
       '.bdl:disabled{opacity:.4;cursor:default}' +
