@@ -45,7 +45,8 @@
       '.item{border:1px solid #313244;border-radius:6px;margin:6px 8px;padding:12px;background:#181825}' +
       '.ih{display:flex;align-items:center;gap:8px;margin-bottom:8px}' +
       '.bpv{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:bold 12px/1 sans-serif;color:#fff;flex-shrink:0}' +
-      '.ih input[type=text]{flex:1;padding:4px 6px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:12px}' +
+      '.ih input[type=text]{flex:1;min-width:0;padding:4px 6px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:12px}' +
+      '.ih input[type=number]{width:52px;flex-shrink:0;padding:3px 4px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:12px}' +
       '.rw{display:flex;gap:6px;margin-bottom:4px;align-items:center;flex-wrap:wrap}' +
       '.rw label{font-size:11px;color:#a6adc8;min-width:36px}' +
       '.rw input[type=number]{width:auto;min-width:40px;flex:1;padding:3px 4px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:11px}' +
@@ -53,9 +54,9 @@
       '.rw select{flex:3;min-width:0;padding:3px 4px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:11px}' +
       '.sh{margin:0 0 2px;padding-top:8px;font-size:10px;font-weight:700;color:#585b70;text-transform:uppercase;letter-spacing:.5px}' +
       '.shs{padding-top:0}' +
-      '.del{background:none;border:none;color:#f38ba8;cursor:pointer;padding:2px 6px}' +
+      '.del{background:none;border:none;color:#f38ba8;cursor:pointer;padding:2px 6px;flex-shrink:0}' +
       '.del svg,.mv svg{width:14px;height:14px;vertical-align:-2px}' +
-      '.mv{background:none;border:none;color:#89b4fa;cursor:pointer;padding:2px 4px}' +
+      '.mv{background:none;border:none;color:#89b4fa;cursor:pointer;padding:2px 4px;flex-shrink:0}' +
       '.mv:disabled{opacity:.4;cursor:default}' +
       '.sc{background:#11111b;margin:6px 8px;padding:10px;border-radius:6px;flex-shrink:0}' +
       '.sc label{font-size:11px;color:#a6adc8}' +
@@ -249,6 +250,7 @@
         '<div class="ih">' +
         '<span class="bpv" style="background:' + h.badge.color + '">' + h.badge.number + '</span>' +
         '<input type="text" value="' + htmlEncode(h.label.text || '') + '" placeholder="Label..." data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="text">' +
+        '<input type="number" value="' + h.badge.z + '" min="1" max="99990" title="Z-index (stacking order, higher = on top)" placeholder="Z" data-hl="update" data-id="' + h.id + '" data-sec="badge" data-key="z" data-int>' +
         '<button class="mv" aria-label="Move highlight up" title="Move up" data-hl="move" data-id="' + h.id + '" data-dir="-1"' + (i === 0 ? ' disabled' : '') + '>' + icon('caret-up') + '</button>' +
         '<button class="mv" aria-label="Move highlight down" title="Move down" data-hl="move" data-id="' + h.id + '" data-dir="1"' + (i === hs.length - 1 ? ' disabled' : '') + '>' + icon('caret-down') + '</button>' +
         '<button class="del" aria-label="Delete highlight" title="Delete" data-hl="remove" data-id="' + h.id + '">' + icon('trash') + '</button></div>' +
@@ -421,7 +423,7 @@
       margin: { x: 0, y: 0 },
       border: { color: c, width: 2, style: 'solid' },
       background: { color: c, opacity: 12 },
-      badge: { visible: true, number: state.highlights.length + 1, grid: 'tr', size: 28, margin: { x: 0, y: 0 }, color: c, textColor: '#ffffff' },
+      badge: { visible: true, number: state.highlights.length + 1, z: 99900 + state.nextId, grid: 'tr', size: 28, margin: { x: 0, y: 0 }, color: c, textColor: '#ffffff' },
       label: { visible: true, text: '', grid: 'tl', fontSize: 11, margin: { x: 0, y: 0 }, color: '#ffffff' }
     };
   }
@@ -584,7 +586,7 @@
       var wrapper = document.createElement('div');
       wrapper.className = 'hl-overlay';
       wrapper.setAttribute('data-hl-id', h.id);
-      wrapper.style.cssText = 'position:fixed;pointer-events:none;z-index:99999;' +
+      wrapper.style.cssText = 'position:fixed;pointer-events:none;z-index:' + (h.badge.z == null ? 99900 : h.badge.z) + ';' +
         'left:' + finalLeft + 'px;top:' + finalTop + 'px;' +
         'width:' + finalW + 'px;height:' + finalH + 'px;' +
         'border:' + h.border.width + 'px ' + h.border.style + ' ' + h.border.color + ';' +
