@@ -135,6 +135,40 @@
       list.addEventListener('click', onHlListClick);
       list.addEventListener('change', onHlListChange);
     }
+
+    popup.document.addEventListener('wheel', onPopupWheel, { passive: false });
+  }
+
+  // Mouse-wheel over a focused number input adjusts its value instead of
+  // scrolling the popup; normal scrolling resumes as soon as the input loses
+  // focus, even if the mouse still hovers it (E4). Delegated on the popup
+  // document so it survives the row re-renders; focus is restored afterwards
+  // because re-rendering replaces the focused input.
+  function onPopupWheel(e) {
+    var el = popup.document.activeElement;
+    if (!el || !el.matches || !el.matches('input[type="number"]')) return;
+    if (e.target !== el) return;
+    e.preventDefault();
+    var v = parseFloat(el.value);
+    if (isNaN(v)) v = 0;
+    var step = parseFloat(el.step);
+    if (!(step > 0)) step = 1;
+    var nv = v + (e.deltaY < 0 ? step : -step);
+    var min = el.min === '' ? null : parseFloat(el.min);
+    var max = el.max === '' ? null : parseFloat(el.max);
+    if (min !== null && nv < min) nv = min;
+    if (max !== null && nv > max) nv = max;
+    if (nv === v) return;
+    var id = el.getAttribute('data-id');
+    var sec = el.getAttribute('data-sec');
+    var key = el.getAttribute('data-key');
+    var sub = el.getAttribute('data-sub');
+    el.value = nv;
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    var fresh = popup.document.querySelector(
+      'input[data-hl="update"][data-id="' + id + '"][data-sec="' + sec + '"]' +
+      '[data-key="' + key + '"]' + (sub ? '[data-sub="' + sub + '"]' : ''));
+    if (fresh) fresh.focus();
   }
 
   // Delegated handlers for the highlight list: data-* attributes replace the
