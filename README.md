@@ -6,6 +6,7 @@
 
 A bookmarklet for **highlighting DOM elements and capturing screenshots** — click any element to annotate it, customise borders, backgrounds, numbered badges and labels, then export the result as a PNG screenshot. Just a bookmark — no extension, no backend.
 
+[![Version](https://img.shields.io/github/v/release/ffooll-bit/dom-highlight-tool)](https://github.com/ffooll-bit/dom-highlight-tool/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/ffooll-bit/dom-highlight-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/ffooll-bit/dom-highlight-tool/actions/workflows/ci.yml)
 ![Language](https://img.shields.io/badge/language-JavaScript-F7DF1E?logo=javascript&logoColor=black)
@@ -101,9 +102,15 @@ Tested on Chrome (desktop). Other browsers may work but have not been verified. 
 
 | File | Description |
 |------|-------------|
-| `highlight-tool.js` | Source code (readable, ~580 lines) |
+| `highlight-tool.js` | Source code (readable, commented) |
 | `highlight-tool.min.js` | Minified copy (generated via `npm run build`) |
 | `bookmarklet.txt` | Bookmarklet URL — copy this into a bookmark |
+| `CHANGELOG.md` | Release history |
+| `CONTRIBUTING.md` | Contribution guide |
+| `SECURITY.md` | Security policy and reporting |
+| `LICENSE` | MIT licence |
+| `docs/` | Screenshots and social preview |
+| `.github/workflows/ci.yml` | CI pipeline (build + artifact drift check) |
 | `package.json` | Build script and project metadata |
 
 </div>
