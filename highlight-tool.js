@@ -47,8 +47,8 @@
       '.rw input[type=number]{width:auto;min-width:40px;flex:1;padding:3px 4px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:11px}' +
       '.rw input[type=color]{width:36px;height:28px;padding:0;border:1px solid #45475a;border-radius:4px;cursor:pointer;background:none}' +
       '.rw select{flex:3;min-width:0;padding:3px 4px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:11px}' +
-      '.sh{margin:5px 0 2px;padding-top:4px;border-top:1px solid #313244;font-size:10px;font-weight:700;color:#585b70;text-transform:uppercase;letter-spacing:.5px}' +
-      '.sh svg{width:13px;height:13px;vertical-align:-2px;margin-right:3px}' +
+      '.sh{margin:0 0 2px;padding-top:8px;font-size:10px;font-weight:700;color:#585b70;text-transform:uppercase;letter-spacing:.5px}' +
+      '.shs{padding-top:0}' +
       '.del{background:none;border:none;color:#f38ba8;cursor:pointer;padding:2px 6px}' +
       '.del svg,.mv svg{width:14px;height:14px;vertical-align:-2px}' +
       '.mv{background:none;border:none;color:#89b4fa;cursor:pointer;padding:2px 4px}' +
@@ -73,7 +73,7 @@
       '<div class="tb"><button id="btn-pick">' + icon('plus-circle') + 'New</button><button id="btn-clear" disabled>' + icon('trash') + 'Clear</button></div>' +
       '<div id="hl-list"></div>' +
       '<div class="sc" style="border-top:1px solid #313244">' +
-      '<div class="sh">' + icon('camera') + ' Screenshot</div>' +
+      '<div class="sh shs">Screenshot</div>' +
       '<div class="rw"><label>DPI Scale:</label><select id="dpr"><option value="1">1x</option><option value="2">2x</option></select></div>' +
       '<div class="rw"><label><input type="radio" name="scmode" value="viewport" checked style="margin:0"> Viewport</label>' +
       '<label><input type="radio" name="scmode" value="fullpage" style="margin:0"> Full</label>' +
@@ -86,6 +86,7 @@
     popup.document.close();
 
     wirePopupControls();
+    syncScMode();
   }
 
   // Attach popup controls via addEventListener instead of inline onclick/onchange:
@@ -175,11 +176,28 @@
     return '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
   }
 
+  // Disable the "Areas" screenshot mode while there are no highlights (cropping
+  // an empty set would silently capture the full page), resetting to Viewport.
+  function syncScMode() {
+    if (!popup || popup.closed) return;
+    var areas = popup.document.querySelector('input[name="scmode"][value="highlights"]');
+    if (!areas) return;
+    var has = state.highlights.length > 0;
+    areas.disabled = !has;
+    if (!has && state.screenshotMode === 'highlights') {
+      state.screenshotMode = 'viewport';
+      state.captureDirty = true;
+      var vp = popup.document.querySelector('input[name="scmode"][value="viewport"]');
+      if (vp) vp.checked = true;
+    }
+  }
+
   // Rebuild the highlight list UI inside the popup window.
   function renderPopup() {
     if (!popup || popup.closed) return;
     var list = popup.document.getElementById('hl-list');
     if (!list) return;
+    syncScMode();
     var hs = state.highlights;
     if (!hs.length) {
       list.innerHTML = '<div style="padding:16px;text-align:center;color:#585b70;font-size:12px">No highlights yet</div>';
@@ -193,9 +211,9 @@
         '<div class="ih">' +
         '<span class="bpv" style="background:' + h.badge.color + '">' + h.badge.number + '</span>' +
         '<input type="text" value="' + htmlEncode(h.label.text || '') + '" placeholder="Label..." data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="text">' +
-        '<button class="mv" data-hl="move" data-id="' + h.id + '" data-dir="-1"' + (i === 0 ? ' disabled' : '') + '>' + icon('caret-up') + '</button>' +
-        '<button class="mv" data-hl="move" data-id="' + h.id + '" data-dir="1"' + (i === hs.length - 1 ? ' disabled' : '') + '>' + icon('caret-down') + '</button>' +
-        '<button class="del" data-hl="remove" data-id="' + h.id + '">' + icon('trash') + '</button></div>' +
+        '<button class="mv" aria-label="Move highlight up" title="Move up" data-hl="move" data-id="' + h.id + '" data-dir="-1"' + (i === 0 ? ' disabled' : '') + '>' + icon('caret-up') + '</button>' +
+        '<button class="mv" aria-label="Move highlight down" title="Move down" data-hl="move" data-id="' + h.id + '" data-dir="1"' + (i === hs.length - 1 ? ' disabled' : '') + '>' + icon('caret-down') + '</button>' +
+        '<button class="del" aria-label="Delete highlight" title="Delete" data-hl="remove" data-id="' + h.id + '">' + icon('trash') + '</button></div>' +
         '<div class="sh">border</div>' +
         '<div class="rw"><label>Style:</label><input type="color" value="' + h.border.color + '" data-hl="update" data-id="' + h.id + '" data-sec="border" data-key="color">' +
         '<input type="number" value="' + h.border.width + '" min="0" max="10" data-hl="update" data-id="' + h.id + '" data-sec="border" data-key="width" data-int>' +
