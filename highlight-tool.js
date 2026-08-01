@@ -1,5 +1,5 @@
 (function() {
-  if (window._HL) { window._HL.cleanup(); return; }
+  if (window._HL) { window._HL.cleanup(); }
 
   var state = {
     highlights: [],
