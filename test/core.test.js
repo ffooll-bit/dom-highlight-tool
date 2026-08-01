@@ -64,6 +64,7 @@ test('getDefaultHighlight increments ids and cycles the palette', () => {
 });
 
 test('getDefaultHighlight stores rect, scroll and defaults', () => {
+  HL.clearAll();
   window.scrollX = 33;
   window.scrollY = 44;
   const h = HL.__test.getDefaultHighlight(rect(1, 2, 3, 4), '#x');
@@ -73,7 +74,7 @@ test('getDefaultHighlight stores rect, scroll and defaults', () => {
   assert.equal(h.border.width, 2);
   assert.equal(h.border.style, 'solid');
   assert.equal(h.background.opacity, 12);
-  assert.equal(h.badge.number, h.id);
+  assert.equal(h.badge.number, 1);
   assert.equal(h.badge.grid, 'tr');
   assert.equal(h.label.grid, 'tl');
   assert.equal(h.label.text, '');
@@ -117,6 +118,18 @@ test('removeHL removes a highlight and renumbers badges', () => {
   assert.equal(hs[1].badge.number, 2);
 });
 
+test('badge numbers stay contiguous after delete + add', () => {
+  HL.clearAll();
+  const a = HL.__test.getDefaultHighlight(rect(0, 0, 10, 10), '#n1');
+  const b = HL.__test.getDefaultHighlight(rect(0, 0, 10, 10), '#n2');
+  const c = HL.__test.getDefaultHighlight(rect(0, 0, 10, 10), '#n3');
+  [a, b, c].forEach(seed);
+  HL.removeHL(b.id);
+  const d = HL.__test.getDefaultHighlight(rect(0, 0, 10, 10), '#n4');
+  seed(d);
+  assert.deepEqual(HL.getHighlights().map((x) => x.badge.number), [1, 2, 3]);
+});
+
 test('moveHL moves a highlight down and back up', () => {
   HL.clearAll();
   const a = HL.__test.getDefaultHighlight(rect(0, 0, 10, 10), '#m1');
@@ -125,6 +138,7 @@ test('moveHL moves a highlight down and back up', () => {
   [a, b, c].forEach(seed);
   HL.moveHL(b.id, 1);
   assert.deepEqual(HL.getHighlights().map((x) => x.id), [a.id, c.id, b.id]);
+  assert.deepEqual(HL.getHighlights().map((x) => x.badge.number), [1, 2, 3]);
   HL.moveHL(b.id, -1);
   assert.deepEqual(HL.getHighlights().map((x) => x.id), [a.id, b.id, c.id]);
 });

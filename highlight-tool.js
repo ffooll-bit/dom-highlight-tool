@@ -221,14 +221,19 @@
     renderPopup();
   }
 
+  // Renumber every badge so badge.number equals array position (visual order).
+  function renumberBadges() {
+    for (var j = 0; j < state.highlights.length; j++) {
+      state.highlights[j].badge.number = j + 1;
+    }
+  }
+
   // Remove a highlight and renumber the remaining badge numbers.
   function removeHL(id) {
     for (var i = 0; i < state.highlights.length; i++) {
       if (state.highlights[i].id === id) { state.highlights.splice(i, 1); break; }
     }
-    for (var j = 0; j < state.highlights.length; j++) {
-      state.highlights[j].badge.number = j + 1;
-    }
+    renumberBadges();
     state.captureDirty = true;
     renderHighlights();
     renderPopup();
@@ -246,6 +251,7 @@
         break;
       }
     }
+    renumberBadges();
     state.captureDirty = true;
     renderHighlights();
     renderPopup();
@@ -311,7 +317,7 @@
       margin: { x: 0, y: 0 },
       border: { color: c, width: 2, style: 'solid' },
       background: { color: c, opacity: 12 },
-      badge: { visible: true, number: num, grid: 'tr', size: 28, margin: { x: 0, y: 0 }, color: c, textColor: '#ffffff' },
+      badge: { visible: true, number: state.highlights.length + 1, grid: 'tr', size: 28, margin: { x: 0, y: 0 }, color: c, textColor: '#ffffff' },
       label: { visible: true, text: '', grid: 'tl', fontSize: 11, margin: { x: 0, y: 0 }, color: '#ffffff' }
     };
   }
