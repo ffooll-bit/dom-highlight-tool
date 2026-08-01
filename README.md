@@ -15,6 +15,8 @@ A bookmarklet for **highlighting DOM elements and capturing screenshots** — cl
 
 ## Demo
 
+**Try it live:** [dom-highlight-tool on GitHub Pages](https://ffooll-bit.github.io/dom-highlight-tool/) — open the demo page, click **Try the tool**, then highlight elements and capture a PNG directly in your browser.
+
 <p align="center">
   <img src="docs/screenshots/screenshot-demo.png" alt="Page with multiple highlights applied — each element has a coloured border, numbered badge, and label">
   <br>
@@ -94,6 +96,7 @@ Tested on Chrome (desktop). Other browsers may work but have not been verified. 
 
 - Does not support iframes or Shadow DOM
 - `html2canvas` is loaded from CDN — an internet connection is required
+- Pages with a strict Content-Security-Policy (e.g. GitHub, Google) block the `html2canvas` CDN script, so **capture is unavailable there** (the tool shows an error message). Highlighting still works on every page.
 - Cross-origin content may not render in screenshots due to browser CORS policy
 
 ## Files
