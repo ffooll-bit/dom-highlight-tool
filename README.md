@@ -119,11 +119,7 @@ This regenerates `highlight-tool.min.js` and `bookmarklet.txt` from `highlight-t
 
 ## Contributing
 
-PRs are welcome. Before submitting:
-
-1. Run `npm run build` — the build must pass
-2. Keep changes focused on a single concern
-3. Match the existing code style (no framework, no new dependencies)
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding conventions and the pull-request workflow.
 
 For bugs or feature requests, [open an issue](https://github.com/ffooll-bit/dom-highlight-tool/issues).
 
