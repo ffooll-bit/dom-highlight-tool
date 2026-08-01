@@ -667,7 +667,14 @@
     capture: capture,
     download: download,
     togglePick: togglePick,
-    updateToolbar: updateToolbar
+    updateToolbar: updateToolbar,
+    // Test hook (excluded from normal use; adds a few bytes when minified).
+    __test: {
+      htmlEncode: htmlEncode,
+      gridPosCSS: gridPosCSS,
+      getDefaultHighlight: getDefaultHighlight,
+      seed: function(hl) { state.highlights.push(hl); }
+    }
   };
 
   openPopup();
