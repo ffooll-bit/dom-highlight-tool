@@ -558,17 +558,22 @@
     var mode = state.screenshotMode;
     var scale = state.dprScale || 1;
 
-    if (document.querySelector('script[src*="html2canvas"]')) {
+    if (typeof window.html2canvas === 'function') {
       doCapture(mode, scale);
       return;
     }
+
+    // Remove any previously injected (e.g. failed) script so a retry actually reloads.
+    var stale = document.querySelector('script[src*="html2canvas"]');
+    if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+
     var script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
     script.onload = function() { doCapture(mode, scale); };
     script.onerror = function() {
       if (popup && !popup.closed) {
         var pv = popup.document.getElementById('pv');
-        if (pv) pv.innerHTML = '<span style="color:#f38ba8">Failed to load html2canvas. Check internet.</span>';
+        if (pv) pv.innerHTML = '<span style="color:#f38ba8">Failed to load html2canvas (blocked by this page\'s security policy, or offline).</span>';
       }
     };
     document.head.appendChild(script);
