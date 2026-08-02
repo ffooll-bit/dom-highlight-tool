@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- The "Highlighted Areas" capture now crops to the exact highlight box — a per-highlight margin offset shifts the crop to match the box instead of clipping or over-including space (#79).
+- The popup footer hint now reflects the tool state — "Click element to highlight" only shows while picking (#80).
+
 ## [1.2.0] - 2026-08-02
 
 ### Added
