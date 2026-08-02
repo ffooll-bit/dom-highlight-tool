@@ -11,7 +11,7 @@ Thanks for taking the time to contribute to DOM Highlight Tool. This project is 
    npm install
    ```
 
-3. Make your changes in `highlight-tool.js` — this is the only source file.
+3. Make your changes in `highlight-tool.js` — this is the only source file. Before diving in, read [`STRUCTURE.md`](STRUCTURE.md) (where to add new code) and [`ARCHITECTURE.md`](ARCHITECTURE.md) (how the tool is layered).
 
 ## Development
 
