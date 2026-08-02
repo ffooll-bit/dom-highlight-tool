@@ -114,6 +114,8 @@ Tested on Chrome (desktop). Other browsers may work but have not been verified. 
 | `CONTRIBUTING.md` | Contribution guide |
 | `SECURITY.md` | Security policy and reporting |
 | `CODE_OF_CONDUCT.md` | Community code of conduct |
+| `ARCHITECTURE.md` | How the tool is structured (layers, data flow, key abstractions) |
+| `STRUCTURE.md` | Repository layout and where to add new code |
 | `LICENSE` | MIT licence |
 | `docs/` | Screenshots and social preview |
 | `.github/workflows/ci.yml` | CI pipeline (build + artifact drift check) |

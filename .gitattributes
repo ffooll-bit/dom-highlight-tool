@@ -9,3 +9,4 @@ LICENSE text
 .gitattributes text
 highlight-tool.min.js linguist-generated=true
 bookmarklet.txt linguist-generated=true
+docs/highlight-tool.min.js linguist-generated=true
