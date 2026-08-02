@@ -2,6 +2,7 @@ node_modules/
 .cortexkit/
 reports/
 .playwright-mcp/
+temp/
 *.log
 .DS_Store
 Thumbs.db
