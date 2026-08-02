@@ -8,8 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-- The "Highlighted Areas" capture now crops to the exact highlight box — a per-highlight margin offset shifts the crop to match the box instead of clipping or over-including space (#79).
-- The popup footer hint now reflects the tool state — "Click element to highlight" only shows while picking (#80).
+- Capturing now cancels picking mode first, so the hover outline can't appear in the screenshot (#83).
+- Picking a new highlight after a capture marks the screenshot as stale, keeping Download disabled until the next capture (#85).
+- Rapidly clicking Capture while html2canvas is still loading now runs only a single capture (#86).
+- The picking overlays carry their documented classes (#84).
+- The "Highlighted Areas" capture now crops to the exact highlight box — a per-highlight margin offset shifts the crop to match the box instead of clipping or over-including space (#81).
+- The popup footer hint now reflects the tool state — "Click element to highlight" only shows while picking (#81).
 
 ## [1.2.0] - 2026-08-02
 

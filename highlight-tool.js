@@ -18,6 +18,7 @@
   };
   var popup = null;
   var lastBlob = null;
+  var capturing = false;
 
   // Escape text for safe interpolation into HTML (safe inside double-quoted attributes).
   function htmlEncode(s) {
@@ -394,8 +395,12 @@
     if (dl) dl.disabled = state.captureDirty || !lastBlob;
   }
 
-  // Start a screenshot; shows "Capturing..." in the preview.
+  // Start a screenshot; shows "Capturing..." in the preview. Picking mode is
+  // cancelled first so the hover outline can't end up in the shot (J1).
   function capture() {
+    if (capturing) return;
+    capturing = true;
+    if (state.picking) disablePick();
     var pv = popup.document.getElementById('pv');
     if (pv) pv.innerHTML = 'Capturing...';
     takeScreenshot();
@@ -448,10 +453,12 @@
     state.picking = true;
 
     pickerOverlay = document.createElement('div');
+    pickerOverlay.className = 'hl-picker-overlay';
     pickerOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:99998;cursor:crosshair;background:transparent';
     document.body.appendChild(pickerOverlay);
 
     hoverOverlay = document.createElement('div');
+    hoverOverlay.className = 'hl-hover-overlay';
     hoverOverlay.style.cssText = 'position:fixed;pointer-events:none;z-index:99997;border:1px dashed rgba(0,0,0,0.5);background:rgba(91,141,239,0.08);display:none';
     document.body.appendChild(hoverOverlay);
 
@@ -485,6 +492,7 @@
       disablePick();
       var hl = getDefaultHighlight(rect);
       state.highlights.push(hl);
+      state.captureDirty = true;
       renderHighlights();
       renderPopup();
     }
@@ -525,7 +533,7 @@
     disablePick();
     if (popup && !popup.closed) popup.close();
     popup = null;
-    if (lastBlob) { URL.revokeObjectURL(lastBlob); lastBlob = null; }
+    lastBlob = null;
     delete window._HL;
   }
 
@@ -635,6 +643,7 @@
     script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
     script.onload = function() { doCapture(mode, scale); };
     script.onerror = function() {
+      capturing = false;
       if (popup && !popup.closed) {
         var pv = popup.document.getElementById('pv');
         if (pv) pv.innerHTML = '<span style="color:#f38ba8">Failed to load html2canvas (blocked by this page\'s security policy, or offline).</span>';
@@ -650,6 +659,7 @@
     var vh = document.documentElement.clientHeight;
 
     function done(canvas) {
+      capturing = false;
       canvas.toBlob(function(blob) {
         lastBlob = blob;
         state.captureDirty = false;
@@ -703,6 +713,7 @@
     }
 
     function captureError(err) {
+      capturing = false;
       if (popup && !popup.closed) {
         var pv = popup.document.getElementById('pv');
         if (pv) pv.innerHTML = '<span style="color:#f38ba8">Capture failed: ' + htmlEncode(err.message) + '</span>';
