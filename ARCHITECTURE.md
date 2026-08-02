@@ -37,7 +37,7 @@
 **Overlay rendering:**
 - Purpose: Draw one `.hl-overlay` div per highlight on the page (border, background, badge, label)
 - Location: `renderHighlights()`, `getBadgeStyle()`, `getLabelStyle()`, `gridPosCSS()`
-- Contains: Removes all `.hl-overlay` divs and rebuilds them; computes final box from `rect + padding + margin`; per-highlight z-index from `h.badge.z`; badge/label anchored to one of nine grid positions
+- Contains: Removes all `.hl-overlay` divs and rebuilds them; computes final box from `rect + padding + margin`; per-highlight z-index from `h.badge.z` (clamped to a minimum of 1 by `updateHL()` so a cleared Z field can't sink the overlay under page content); badge/label anchored to one of nine grid positions
 - Depends on: state
 - Used by: every state mutation (pick, update, remove, move, clear)
 
@@ -148,7 +148,7 @@
 **Test suite:**
 - Location: `test/core.test.js`, invoked by `npm test` (`node --test test/core.test.js`)
 - Triggers: Local dev, CI (`npm test` in `.github/workflows/ci.yml`)
-- Responsibilities: Stub `window`/`document`/`alert`, `eval` the source, and assert the pure functions plus highlight ops (`updateHL`, `removeHL`, `moveHL`, badge contiguity)
+- Responsibilities: Stub `window`/`document`/`alert`, `eval` the source, and assert the pure functions plus highlight ops (`updateHL` incl. the `badge.z` minimum-1 clamp, `removeHL`, `moveHL`, badge contiguity)
 
 **Demo page:**
 - Location: `docs/index.html`
@@ -161,7 +161,7 @@
 
 - Popup blocked → `alert('Popup blocked! ...')` and abort (`openPopup()`)
 - html2canvas CDN load fails → red message in the preview distinguishing "blocked by this page's security policy" from "offline" (`takeScreenshot()`'s `onerror`)
-- Capture rejects → red "Capture failed: <message>" in the preview (`captureError` in `doCapture()`)
+- Capture rejects → red "Capture failed: <message>" in the preview, message escaped with `htmlEncode()` so HTML-bearing errors can't inject markup (`captureError` in `doCapture()`)
 - Retry after a failed html2canvas load → the stale injected `<script>` is removed so a retry actually reloads the CDN file (`takeScreenshot()`)
 - "Areas" mode with zero highlights → option disabled and mode falls back to `viewport` (`syncScMode()`)
 - Download before a fresh capture → Download button disabled while `captureDirty || !lastBlob` (`updateToolbar()`)
