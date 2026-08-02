@@ -87,7 +87,7 @@
       '<div style="display:flex;gap:6px"><button class="bcp">' + icon('camera') + ' Capture</button><button class="bdl" id="dlbtn" disabled>' + icon('download') + ' Download</button></div>' +
       '</div>' +
       '<div class="pv" id="pv">Preview will appear here</div>' +
-      '<div class="ft">Click element to highlight</div>' +
+      '<div class="ft">Click New to add a highlight</div>' +
       '</body></html>');
     popup.document.close();
 
@@ -377,7 +377,8 @@
     updateToolbar();
   }
 
-  // Sync popup buttons (New/Cancel, Clear, Download) with current state.
+  // Sync popup buttons (New/Cancel, Clear, Download) and the footer hint with
+  // the current state.
   function updateToolbar() {
     if (!popup || popup.closed) return;
     var btn = popup.document.getElementById('btn-pick');
@@ -385,6 +386,8 @@
       if (state.picking) { btn.innerHTML = icon('x-circle') + 'Cancel (Esc)'; }
       else { btn.innerHTML = icon('plus-circle') + 'New'; }
     }
+    var ft = popup.document.querySelector('.ft');
+    if (ft) ft.textContent = state.picking ? 'Click element to highlight' : 'Click New to add a highlight';
     var clr = popup.document.getElementById('btn-clear');
     if (clr) clr.disabled = state.highlights.length === 0;
     var dl = popup.document.getElementById('dlbtn');
@@ -673,14 +676,15 @@
       return html2canvas(docEl, { width: vw, height: vh, windowWidth: vw, windowHeight: vh, scrollX: -window.pageXOffset, scrollY: -window.pageYOffset, useCORS: true, scale: scale });
     }
 
-    // Crop a full-page canvas to the bounding box of all highlights (+ padding).
+    // Crop the full-page canvas to the bounding box of all highlights (+ padding
+    // and the margin offset, matching how renderHighlights positions the box).
     function cropToHighlights(canvas) {
       var areas = state.highlights.map(function(h) {
         return {
-          left: h.rect.left + h.rect.scrollX - h.padding.left,
-          top: h.rect.top + h.rect.scrollY - h.padding.top,
-          right: h.rect.left + h.rect.scrollX + h.rect.width + h.padding.right,
-          bottom: h.rect.top + h.rect.scrollY + h.rect.height + h.padding.bottom
+          left: h.rect.left + h.rect.scrollX - h.padding.left - h.margin.x,
+          top: h.rect.top + h.rect.scrollY - h.padding.top - h.margin.y,
+          right: h.rect.left + h.rect.scrollX - h.margin.x + h.rect.width + h.padding.right,
+          bottom: h.rect.top + h.rect.scrollY - h.margin.y + h.rect.height + h.padding.bottom
         };
       });
       var left = Math.min.apply(null, areas.map(function(a) { return a.left; }));
