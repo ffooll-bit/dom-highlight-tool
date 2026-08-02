@@ -68,8 +68,8 @@
       '.bcp{background:#89b4fa;color:#1e1e2e}' +
       '.bdl{background:#a6e3a1;color:#1e1e2e}' +
       '.bdl:disabled{opacity:.4;cursor:default}' +
-      '.pv{margin:6px 8px;border:1px solid #313244;border-radius:6px;overflow:hidden;background:#11111b;text-align:center;min-height:60px;max-height:200px;display:flex;align-items:center;justify-content:center;color:#585b70;font-size:12px;flex-shrink:0}' +
-      '.pv img{max-width:100%;display:block}' +
+      '.pv{margin:6px 8px;border:1px solid #313244;border-radius:6px;overflow:hidden;background:#11111b;text-align:center;height:200px;display:flex;align-items:center;justify-content:center;color:#585b70;font-size:12px;flex-shrink:0}' +
+      '.pv img{max-width:100%;max-height:100%;display:block;margin:auto}' +
       '.ft{padding:8px;text-align:center;font-size:11px;color:#585b70;border-top:1px solid #313244;flex-shrink:0}' +
       '@media (max-width:380px){.tb{flex-direction:column}.tb button{width:100%}.rw input[type=number],.rw select{min-width:100%}.rw label{min-width:auto}}' +
       '@media (min-width:560px){.item{padding:14px;margin:8px 12px}.rw{gap:8px}.rw input[type=number]{padding:4px 6px}.rw select{padding:4px 6px}}' +

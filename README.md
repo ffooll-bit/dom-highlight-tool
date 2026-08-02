@@ -44,7 +44,7 @@ A bookmarklet for **highlighting DOM elements and capturing screenshots** — cl
 - Mouse-wheel fine-tuning on focused number inputs (border width, padding, position, opacity)
 - Screenshot modes: **Viewport**, **Full Page**, **Highlighted Areas Only**
 - DPI scaling: 1× or 2× for HiDPI captures
-- Preview before download
+- Preview before download (scaled to fit, preserving aspect ratio)
 - Lightweight — no extension, just a bookmark
 
 ## How It Works
