@@ -47,6 +47,7 @@
       '.bpv{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:bold 12px/1 sans-serif;color:#fff;flex-shrink:0}' +
       '.ih input[type=text]{flex:1;min-width:0;padding:4px 6px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:12px}' +
       '.ih input[type=number]{width:52px;flex-shrink:0;padding:3px 4px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:12px}' +
+      '.zl{color:#585b70;font-size:11px;flex-shrink:0}' +
       '.rw{display:flex;gap:6px;margin-bottom:4px;align-items:center;flex-wrap:wrap}' +
       '.rw label{font-size:11px;color:#a6adc8;min-width:36px}' +
       '.rw input[type=number]{width:auto;min-width:40px;flex:1;padding:3px 4px;border:1px solid #45475a;background:#1e1e2e;color:#cdd6f4;border-radius:4px;font-size:11px}' +
@@ -250,7 +251,8 @@
         '<div class="ih">' +
         '<span class="bpv" style="background:' + h.badge.color + '">' + h.badge.number + '</span>' +
         '<input type="text" value="' + htmlEncode(h.label.text || '') + '" placeholder="Label..." data-hl="update" data-id="' + h.id + '" data-sec="label" data-key="text">' +
-        '<input type="number" value="' + h.badge.z + '" min="1" max="99990" title="Z-index (stacking order, higher = on top)" placeholder="Z" data-hl="update" data-id="' + h.id + '" data-sec="badge" data-key="z" data-int>' +
+        '<span class="zl" title="Z-index (stacking order, higher = on top)">Z</span>' +
+        '<input type="number" value="' + h.badge.z + '" min="1" max="99990" title="Z-index (stacking order, higher = on top)" data-hl="update" data-id="' + h.id + '" data-sec="badge" data-key="z" data-int>' +
         '<button class="mv" aria-label="Move highlight up" title="Move up" data-hl="move" data-id="' + h.id + '" data-dir="-1"' + (i === 0 ? ' disabled' : '') + '>' + icon('caret-up') + '</button>' +
         '<button class="mv" aria-label="Move highlight down" title="Move down" data-hl="move" data-id="' + h.id + '" data-dir="1"' + (i === hs.length - 1 ? ' disabled' : '') + '>' + icon('caret-down') + '</button>' +
         '<button class="del" aria-label="Delete highlight" title="Delete" data-hl="remove" data-id="' + h.id + '">' + icon('trash') + '</button></div>' +
@@ -380,7 +382,7 @@
     if (!popup || popup.closed) return;
     var btn = popup.document.getElementById('btn-pick');
     if (btn) {
-      if (state.picking) { btn.innerHTML = icon('x-circle') + 'Cancel'; }
+      if (state.picking) { btn.innerHTML = icon('x-circle') + 'Cancel (Esc)'; }
       else { btn.innerHTML = icon('plus-circle') + 'New'; }
     }
     var clr = popup.document.getElementById('btn-clear');
