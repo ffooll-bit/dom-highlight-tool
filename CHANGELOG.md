@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-08-02
+
 ### Fixed
 
 - Capturing now cancels picking mode first, so the hover outline can't appear in the screenshot (#83).
@@ -87,7 +89,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Security hardening: input escaping, highlight ID collisions, script and memory leaks, scroll-coordinate accuracy, NaN input handling and unhandled promise errors.
 
-[Unreleased]: https://github.com/ffooll-bit/dom-highlight-tool/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/ffooll-bit/dom-highlight-tool/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/ffooll-bit/dom-highlight-tool/releases/tag/v1.2.1
 [1.2.0]: https://github.com/ffooll-bit/dom-highlight-tool/releases/tag/v1.2.0
 [1.1.0]: https://github.com/ffooll-bit/dom-highlight-tool/releases/tag/v1.1.0
 [1.0.0]: https://github.com/ffooll-bit/dom-highlight-tool/releases/tag/v1.0.0
