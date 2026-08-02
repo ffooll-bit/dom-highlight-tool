@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-02
+
 ### Added
 
 - Highlights now **attach to the page**: they stay on their target elements while scrolling, and full-page and "highlighted areas" captures align exactly (no coordinate conversion needed) (#59).
@@ -76,6 +78,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Security hardening: input escaping, highlight ID collisions, script and memory leaks, scroll-coordinate accuracy, NaN input handling and unhandled promise errors.
 
-[Unreleased]: https://github.com/ffooll-bit/dom-highlight-tool/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/ffooll-bit/dom-highlight-tool/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/ffooll-bit/dom-highlight-tool/releases/tag/v1.2.0
 [1.1.0]: https://github.com/ffooll-bit/dom-highlight-tool/releases/tag/v1.1.0
 [1.0.0]: https://github.com/ffooll-bit/dom-highlight-tool/releases/tag/v1.0.0
