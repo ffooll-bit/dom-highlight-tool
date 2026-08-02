@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Highlights now **attach to the page**: they stay on their target elements while scrolling, and full-page and "highlighted areas" captures align exactly (no coordinate conversion needed) (#59).
+- The capture preview now **fits the whole image at its original aspect ratio** — tall full-page and 2× viewport captures are no longer cropped (#70).
+- The toolbar shows **"Cancel (Esc)"** while picking, and the per-highlight z-index input gains a visible **Z** label (#68).
+
+### Changed
+
+- `ARCHITECTURE.md` and `STRUCTURE.md` — describing the tool's layers and where to add new code — are committed to the repository (#57).
+- Contributing guide points to the architecture and structure docs, `package.json` declares the live demo as its homepage, the README screenshot-mode wording is consistent and gains a **Live Demo** badge (#75).
+
+### Fixed
+
+- Viewport captures now show the area you are looking at, rendered at the page's layout width, and full-page captures always start from the top — the scrollbar offset, the page-top rendering and the scrolled top-margin bugs are gone (#62).
+- A failed full-page or "highlighted areas" capture no longer leaves highlights offset from their targets — the coordinate-conversion layer was removed entirely (#59).
+- Clearing the per-highlight z-index field can no longer sink the highlight below page content (values clamp to a minimum of 1) (#65).
+- Capture error messages are HTML-escaped before being shown in the preview (#65).
+
 ## [1.1.0] - 2026-08-01
 
 ### Added
