@@ -10,6 +10,7 @@ A bookmarklet for **highlighting DOM elements and capturing screenshots** — cl
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/ffooll-bit/dom-highlight-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/ffooll-bit/dom-highlight-tool/actions/workflows/ci.yml)
 ![Language](https://img.shields.io/badge/language-JavaScript-F7DF1E?logo=javascript&logoColor=black)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-89b4fa)](https://ffooll-bit.github.io/dom-highlight-tool/)
 
 </div>
 
@@ -83,7 +84,7 @@ Three simple phases:
 6. Repeat for more highlights (colours cycle automatically)
 
 ### Capture
-7. Select screenshot mode: **Viewport** / **Full Page** / **Highlight Areas**
+7. Select screenshot mode: **Viewport** / **Full Page** / **Highlighted Areas Only**
 8. Adjust DPI scale if needed (1× or 2×)
 9. Click **Capture** — the preview appears
 10. Click **Download** to save the PNG

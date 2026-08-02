@@ -16,6 +16,7 @@
   "bugs": {
     "url": "https://github.com/ffooll-bit/dom-highlight-tool/issues"
   },
+  "homepage": "https://ffooll-bit.github.io/dom-highlight-tool/",
   "scripts": {
     "build": "terser highlight-tool.js -o highlight-tool.min.js && node -e \"const fs=require('fs');const v=JSON.parse(fs.readFileSync('package.json','utf8')).version;const m=fs.readFileSync('highlight-tool.min.js','utf8');if(!m.includes(v)){console.error('Version mismatch: VERSION in highlight-tool.js does not match package.json ('+v+')');process.exit(1)}fs.writeFileSync('bookmarklet.txt','javascript:'+m);fs.copyFileSync('highlight-tool.min.js','docs/highlight-tool.min.js')\"",
     "test": "node --test test/core.test.js"
