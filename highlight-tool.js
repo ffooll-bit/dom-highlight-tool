@@ -6,7 +6,7 @@
   if (window._HL) { window._HL.cleanup(); }
 
   // Popup header version, kept in sync with package.json (the build verifies it).
-  var VERSION = '1.2.0';
+  var VERSION = '1.2.1';
 
   var state = {
     highlights: [],
