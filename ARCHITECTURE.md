@@ -51,7 +51,7 @@
 **Capture:**
 - Purpose: Produce the screenshot PNG in the selected mode and surface it for preview/download
 - Location: `capture()`, `takeScreenshot()`, `doCapture()`, `cropToHighlights()`
-- Contains: On-demand html2canvas loader (removes any stale injected script so retries actually reload, distinguishes CSP-blocked from offline in the error message); per-mode capture (`captureViewport`, `captureFullPage` — html2canvas over `documentElement` sized to `body`/`docEl` scroll extents); `cropToHighlights()` draws the highlights' bounding box (plus padding) from the full-page canvas onto a new canvas at DPI scale
+- Contains: On-demand html2canvas loader (removes any stale injected script so retries actually reload, distinguishes CSP-blocked from offline in the error message); per-mode capture — `captureViewport` renders at `clientWidth`/`clientHeight` with `scrollX`/`scrollY` pinned to `-pageXOffset`/`-pageYOffset` so it captures the current viewport in the overlays' layout space, `captureFullPage` renders the `documentElement` sized to the `body`/`docEl` scroll extents with `scrollX: 0, scrollY: 0` so it always captures from the page top; `cropToHighlights()` draws the highlights' bounding box (plus padding) from the full-page canvas onto a new canvas at DPI scale
 - Depends on: state, external html2canvas (CDN)
 - Used by: popup's Capture button
 

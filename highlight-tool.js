@@ -637,8 +637,8 @@
   // Capture per screenshotMode: viewport, full page, or a crop around highlights.
   function doCapture(mode, scale) {
     var docEl = document.documentElement;
-    var vw = window.innerWidth;
-    var vh = window.innerHeight;
+    var vw = document.documentElement.clientWidth;
+    var vh = document.documentElement.clientHeight;
 
     function done(canvas) {
       canvas.toBlob(function(blob) {
@@ -660,11 +660,11 @@
     function captureFullPage() {
       var fw = Math.max(document.body.scrollWidth, docEl.scrollWidth);
       var fh = Math.max(document.body.scrollHeight, docEl.scrollHeight);
-      return html2canvas(docEl, { width: fw, height: fh, windowWidth: fw, windowHeight: fh, useCORS: true, scale: scale });
+      return html2canvas(docEl, { width: fw, height: fh, windowWidth: fw, windowHeight: fh, scrollX: 0, scrollY: 0, useCORS: true, scale: scale });
     }
 
     function captureViewport() {
-      return html2canvas(docEl, { width: vw, height: vh, windowWidth: vw, windowHeight: vh, useCORS: true, scale: scale });
+      return html2canvas(docEl, { width: vw, height: vh, windowWidth: vw, windowHeight: vh, scrollX: -window.pageXOffset, scrollY: -window.pageYOffset, useCORS: true, scale: scale });
     }
 
     // Crop a full-page canvas to the bounding box of all highlights (+ padding).
