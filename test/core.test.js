@@ -98,6 +98,21 @@ test('updateHL 5-arg sets nested section[key][subKey]', () => {
   assert.equal(stored.badge.margin.x, 5);
 });
 
+test('updateHL clamps badge.z to at least 1', () => {
+  HL.clearAll();
+  const h = HL.__test.getDefaultHighlight(rect(0, 0, 10, 10), '#z1');
+  seed(h);
+  HL.updateHL(h.id, 'badge', 'z', 0);
+  let stored = HL.getHighlights().find((x) => x.id === h.id);
+  assert.equal(stored.badge.z, 1);
+  HL.updateHL(h.id, 'badge', 'z', '');
+  stored = HL.getHighlights().find((x) => x.id === h.id);
+  assert.equal(stored.badge.z, 1);
+  HL.updateHL(h.id, 'badge', 'z', 500);
+  stored = HL.getHighlights().find((x) => x.id === h.id);
+  assert.equal(stored.badge.z, 500);
+});
+
 test('updateHL with an unknown id is a no-op', () => {
   const before = HL.getHighlights().length;
   HL.updateHL(9999, 'label', 'text', 'nope');
