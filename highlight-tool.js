@@ -523,47 +523,10 @@
   // Snapshot of current highlights.
   function getHighlights() { return state.highlights.slice(); }
 
-  // Overlays are position:fixed at pick-time viewport coords. For full-page
-  // capture, convert to absolute page coords using each highlight's stored
-  // scroll position (the user may have scrolled since the element was picked).
-  function convertHighlightsToAbsolute() {
-    var divs = document.querySelectorAll('.hl-overlay');
-    for (var i = 0; i < divs.length; i++) {
-      var div = divs[i];
-      var id = parseInt(div.getAttribute('data-hl-id'), 10);
-      var hl = null;
-      for (var j = 0; j < state.highlights.length; j++) {
-        if (state.highlights[j].id === id) { hl = state.highlights[j]; break; }
-      }
-      if (!hl) continue;
-      var left = parseFloat(div.style.left) + hl.rect.scrollX;
-      var top = parseFloat(div.style.top) + hl.rect.scrollY;
-      div.style.position = 'absolute';
-      div.style.left = left + 'px';
-      div.style.top = top + 'px';
-    }
-  }
-
-  // Reverse of convertHighlightsToAbsolute — back to fixed viewport coords.
-  function convertHighlightsToFixed() {
-    var divs = document.querySelectorAll('.hl-overlay');
-    for (var i = 0; i < divs.length; i++) {
-      var div = divs[i];
-      var id = parseInt(div.getAttribute('data-hl-id'), 10);
-      var hl = null;
-      for (var j = 0; j < state.highlights.length; j++) {
-        if (state.highlights[j].id === id) { hl = state.highlights[j]; break; }
-      }
-      if (!hl) continue;
-      var left = parseFloat(div.style.left) - hl.rect.scrollX;
-      var top = parseFloat(div.style.top) - hl.rect.scrollY;
-      div.style.position = 'fixed';
-      div.style.left = left + 'px';
-      div.style.top = top + 'px';
-    }
-  }
-
   // Re-draw all overlay boxes on the page (border, background, badge, label).
+  // Overlays are position:absolute at page coordinates (pick-time viewport
+  // rect + the scroll offset captured when the element was picked), so they
+  // scroll with the page and stay attached to their target elements.
   function renderHighlights() {
     var old = document.querySelectorAll('.hl-overlay');
     for (var i = 0; i < old.length; i++) old[i].remove();
@@ -586,8 +549,8 @@
       var wrapper = document.createElement('div');
       wrapper.className = 'hl-overlay';
       wrapper.setAttribute('data-hl-id', h.id);
-      wrapper.style.cssText = 'position:fixed;pointer-events:none;z-index:' + (h.badge.z == null ? 99900 : h.badge.z) + ';' +
-        'left:' + finalLeft + 'px;top:' + finalTop + 'px;' +
+      wrapper.style.cssText = 'position:absolute;pointer-events:none;z-index:' + (h.badge.z == null ? 99900 : h.badge.z) + ';' +
+        'left:' + (finalLeft + r.scrollX) + 'px;top:' + (finalTop + r.scrollY) + 'px;' +
         'width:' + finalW + 'px;height:' + finalH + 'px;' +
         'border:' + h.border.width + 'px ' + h.border.style + ' ' + h.border.color + ';' +
         'background:rgba(' + bgR + ',' + bgG + ',' + bgB + ',' + bgAlpha + ');';
@@ -739,15 +702,9 @@
     if (mode === 'viewport') {
       captureViewport().then(done, captureError);
     } else if (mode === 'fullpage') {
-      convertHighlightsToAbsolute();
-      captureFullPage().then(function(canvas) {
-        convertHighlightsToFixed();
-        done(canvas);
-      }, captureError);
+      captureFullPage().then(done, captureError);
     } else if (mode === 'highlights') {
-      convertHighlightsToAbsolute();
       captureFullPage().then(function(canvas) {
-        convertHighlightsToFixed();
         done(cropToHighlights(canvas));
       }, captureError);
     }
@@ -761,8 +718,6 @@
     cleanup: cleanup,
     getHighlights: getHighlights,
     takeScreenshot: takeScreenshot,
-    convertHighlightsToAbsolute: convertHighlightsToAbsolute,
-    convertHighlightsToFixed: convertHighlightsToFixed,
     renderPopup: renderPopup,
     updateHL: updateHL,
     removeHL: removeHL,

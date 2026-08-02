@@ -8,7 +8,7 @@
 - One source file, vanilla JavaScript, no framework, no build step for end users — the shipped artifact is the minified bookmarklet
 - CSP-safe by construction: no inline `onclick`/`onchange` anywhere — popup controls are wired with `addEventListener` from the opener's (already-allowed) script context, per-highlight controls use one delegated listener on `#hl-list` reading `data-*` attributes, and icons are inline SVGs (no external fonts or stylesheets)
 - All state lives in the closure's `state` object; the popup is rebuilt from it on every change (`renderPopup()`), so the popup is always a disposable view
-- Highlights are `position:fixed` overlays at pick-time viewport coordinates; each highlight stores the page's scroll position at pick time so captures can convert to absolute page coordinates
+- Highlights are `position:absolute` overlays at page coordinates (pick-time viewport rect + the scroll captured when the element was picked), so they scroll with the page and stay attached to their target elements; no capture-time coordinate conversion is needed
 - Screenshot rendering is delegated to html2canvas, loaded on demand from a CDN (`takeScreenshot()`)
 
 ## Layers
@@ -41,18 +41,18 @@
 - Depends on: state
 - Used by: every state mutation (pick, update, remove, move, clear)
 
-**Coordinate conversion:**
-- Purpose: Bridge pick-time fixed viewport coords and capture-time absolute page coords
-- Location: `convertHighlightsToAbsolute()`, `convertHighlightsToFixed()`
-- Contains: Iterates `.hl-overlay` divs and adds/subtracts each highlight's stored `rect.scrollX`/`rect.scrollY`, toggling `position` between `fixed` and `absolute`
+**Overlay positioning:**
+- Purpose: Overlays are always `position:absolute` at page coordinates, so no capture-time coordinate conversion exists
+- Location: `renderHighlights()` (wrapper `cssText` — `left: rect.left + scrollX`, `top: rect.top + scrollY`)
+- Contains: Each `.hl-overlay` is placed at page coordinates using its stored `rect` plus `rect.scrollX`/`rect.scrollY` captured at pick time; the badge/label anchor inside the wrapper via `gridPosCSS`
 - Depends on: state
-- Used by: `doCapture()` for `fullpage` and `highlights` modes (convert before capture, restore after)
+- Used by: every state mutation (pick, update, remove, move, clear) and all capture modes directly
 
 **Capture:**
 - Purpose: Produce the screenshot PNG in the selected mode and surface it for preview/download
 - Location: `capture()`, `takeScreenshot()`, `doCapture()`, `cropToHighlights()`
 - Contains: On-demand html2canvas loader (removes any stale injected script so retries actually reload, distinguishes CSP-blocked from offline in the error message); per-mode capture (`captureViewport`, `captureFullPage` — html2canvas over `documentElement` sized to `body`/`docEl` scroll extents); `cropToHighlights()` draws the highlights' bounding box (plus padding) from the full-page canvas onto a new canvas at DPI scale
-- Depends on: state, coordinate conversion, external html2canvas (CDN)
+- Depends on: state, external html2canvas (CDN)
 - Used by: popup's Capture button
 
 **Download:**
@@ -65,7 +65,7 @@
 **Public API facade:**
 - Purpose: Expose the tool to the page and to re-activation; expose pure functions to the test suite
 - Location: `window._HL` (bottom of IIFE), `__test` sub-object
-- Contains: `state`, lifecycle (`enablePick`, `disablePick`, `clearAll`, `cleanup`), picking toggle (`togglePick`), highlight ops (`getHighlights`, `updateHL`, `removeHL`, `moveHL`), coordinate conversion (`convertHighlightsToAbsolute`, `convertHighlightsToFixed`), capture (`takeScreenshot`, `capture`, `download`), rendering (`renderPopup`, `updateToolbar`; `renderHighlights` is not exposed), and `__test` with the pure functions `htmlEncode`, `gridPosCSS`, `getDefaultHighlight`, `seed`
+- Contains: `state`, lifecycle (`enablePick`, `disablePick`, `clearAll`, `cleanup`), picking toggle (`togglePick`), highlight ops (`getHighlights`, `updateHL`, `removeHL`, `moveHL`), capture (`takeScreenshot`, `capture`, `download`), rendering (`renderPopup`, `updateToolbar`; `renderHighlights` is not exposed), and `__test` with the pure functions `htmlEncode`, `gridPosCSS`, `getDefaultHighlight`, `seed`
 - Depends on: all layers
 - Used by: bookmark re-activation (`window._HL.cleanup()`), the demo page (`docs/index.html`), the test suite
 
@@ -91,7 +91,7 @@
 **Capture flow:**
 1. Capture button — `capture()` shows "Capturing..." then `takeScreenshot()` — `highlight-tool.js`
 2. If `window.html2canvas` is missing, inject the jsdelivr script (removing any stale tag first); on error, show the CSP/offline message in the preview — `highlight-tool.js`
-3. `doCapture(mode, scale)` — for `fullpage`/`highlights`, `convertHighlightsToAbsolute()` first; html2canvas captures; overlays converted back to fixed — `highlight-tool.js`
+3. `doCapture(mode, scale)` — `fullpage`/`highlights` capture the whole document (`captureFullPage`); `highlights` additionally crops to the highlights' bounding box (`cropToHighlights`) — overlays are already at page coordinates, so no conversion is needed — `highlight-tool.js`
 4. `done(canvas)` — `canvas.toBlob()` → `lastBlob`; preview shows the blob via object URL; `captureDirty = false`; Download enabled — `highlight-tool.js`
 5. Download button — `download()` creates an object-URL `<a download="highlight-….png">` and clicks it — `highlight-tool.js`
 
@@ -177,6 +177,6 @@
 
 **CSP-safety:** Use `addEventListener` from the opener's script context instead of inline handlers; use one delegated listener on `#hl-list` with `data-*` attributes instead of per-row inline `onclick`; use inline SVG path icons instead of fonts/webfonts. Popup and demo pages inherit the host page's CSP, so these constraints hold everywhere.
 
-**Scroll-aware coordinates:** Store `scrollX`/`scrollY` in each highlight at pick time; convert overlays to absolute page coordinates for full-page and areas capture, then restore fixed coordinates after the capture so live overlays stay pinned to the viewport.
+**Scroll-aware coordinates:** Store `scrollX`/`scrollY` in each highlight at pick time; overlays render at page coordinates (`rect + scroll`) so they align with the page, stay on their elements across scrolling, and line up in every capture mode.
 
 **Version sync:** The popup header shows `VERSION` from `highlight-tool.js`; the build (`npm run build` in `package.json`) fails if it does not match `package.json`'s `version`.
