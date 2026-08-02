@@ -318,6 +318,10 @@
         if (value !== undefined) {
           state.highlights[i][section][key][subKey] = value;
         } else {
+          if (section === 'badge' && key === 'z') {
+            // z-index below 1 would sink the overlay under page content (F6).
+            subKey = Math.max(1, subKey) || 1;
+          }
           state.highlights[i][section][key] = subKey;
         }
         break;
@@ -695,7 +699,7 @@
     function captureError(err) {
       if (popup && !popup.closed) {
         var pv = popup.document.getElementById('pv');
-        if (pv) pv.innerHTML = '<span style="color:#f38ba8">Capture failed: ' + err.message + '</span>';
+        if (pv) pv.innerHTML = '<span style="color:#f38ba8">Capture failed: ' + htmlEncode(err.message) + '</span>';
       }
     }
 
